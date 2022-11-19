@@ -136,22 +136,21 @@ int is_full() {
     return 1;
 }
 
-
-
 void get_input() {
     int right_input = 0;
+    char temp_j;
     do { //若输入位置在棋盘内并且该位置无棋子则right_input为1 否则为0一直循环
         //直到输入字母和数字在范围内才能出循环
         while (getchar() != '\n')
             ;   //吸收输入流中多余内容 下同
-        scanf("\n%c%d", &player_j, &player_i);  //\n吸收残留的回车符 下同
-        while (((player_j < 'a' || player_j > 'o') && (player_j <'A' || player_j >'O')) || (player_i <= 0 || player_i > LENGTH)) { 
+        scanf("\n%c%d", &temp_j, &player_i);  //\n吸收残留的回车符 下同
+        while (((temp_j < 'a' || temp_j > 'o') && (temp_j <'A' || temp_j >'O')) || (player_i <= 0 || player_i > LENGTH)) { 
             printf("输入字符非法，请重新输入\n");
             while (getchar() != '\n')
                 ;  
-            scanf("\n%c%d", &player_j, &player_i);  
+            scanf("\n%c%d", &temp_j, &player_i);  
         }
-        player_j = (player_j >= 'a' && player_j <='o') ? player_j - 'a' : player_j - 'A';
+        player_j = (temp_j >= 'a' && temp_j <='o') ? temp_j - 'a' : temp_j - 'A';
         player_i--;
         //判断输入位置是否已经有棋子
         if (fir[player_i][player_j] != 0) {
