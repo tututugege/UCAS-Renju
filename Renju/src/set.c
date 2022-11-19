@@ -2,12 +2,15 @@
 //棋盘基本操作
 //打印棋盘 下棋 判断输赢
 
+void AI_operation();                            //ai下棋的封装
+void set_board(); //打印当前局势的棋盘
+int* set(int* position);      //下棋 
+int* AI_set(int* position);    //AI下棋
+
 /*逐行打印棋盘*/
 void set_board() { 
     int i, j;
 
-    if (game_mode == 2) printf("     五子棋有禁手人机对战\n\n");
-    else printf("     五子棋有禁手人人对战\n\n");
 
     //自上而下打印，因此i从LENGTH-1开始递减
     //每行第一个符号分三种边框情况和四种棋子情况特殊处理

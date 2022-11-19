@@ -7,6 +7,11 @@ int fir[LENGTH][LENGTH] = {0};
 unsigned long long now_key = 0;
 unsigned long long zobrist[LENGTH][LENGTH][2] = {0};
 
+void init_rand();
+void init_point_table();
+void set_board(); //打印当前局势的棋盘
+int* set(int* position);      //下棋 
+int* AI_set(int* position);    //AI下棋
 
 int main() {
 	int* position = (int*)malloc(sizeof(int)*2);	 //记录下棋位置			
@@ -14,7 +19,7 @@ int main() {
 	int time_b, time_w;
 	clock_t start_t, end_t;
 
-	get_rand();
+	init_rand();
 	init_point_table();
 
 	step = time_b = time_w = 0;
@@ -60,3 +65,29 @@ int main() {
 	free(position);
 	system("pause");
 }
+
+void init_rand() {
+    int i, j;
+    int k, l;
+
+    srand((unsigned int)time(NULL));
+    for (i = 0; i < LENGTH; i++) {
+        for (j = 0; j < LENGTH; j++) {
+    	    for(k = 0; k < 63; k++) {
+                zobrist[i][j][0] += rand() & 0b1;
+                zobrist[i][j][0] = zobrist[i][j][0] << 1;
+		    }
+            zobrist[i][j][0] += rand() & 0b1;
+        }
+    }
+    for (i = 0; i < LENGTH; i++) {
+        for (j = 0; j < LENGTH; j++) {
+    	    for(k = 0; k < 63; k++) {
+                zobrist[i][j][1] += rand() & 0b1;
+                zobrist[i][j][1] = zobrist[i][j][1] << 1;
+		    }
+            zobrist[i][j][1] += rand() & 0b1;
+        }
+    }
+}
+

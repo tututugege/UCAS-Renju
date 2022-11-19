@@ -1,11 +1,3 @@
-#define huo_three1  117 //三进制的011100
-#define huo_three2  39 //001110
-#define huo_three3  111 //011010
-#define huo_three4  93 //010110
-#define chong_four_1  112 //11011
-#define chong_four_2  94 //10111
-#define chong_four_3  118 //11101
-
 #define one_1w 18//00200
 #define one_2w 6//00020
 #define one_3w 2//00002
@@ -50,3 +42,15 @@
 
 #define five_b 121   //11111   1000000
 #define five_w 242   //22222   1000000 
+
+#define NUM_POINT 19683 
+
+void init_point_table();
+int init_evaluate(int* board);
+int point_evaluate(int i, int j, int depth);					//总评估的封装函数
+int move_evaluate(int i, int j, int depth);						//总评估的封装函数
+int init_point_evaluate(int i, int j, int dx, int dy);
+int TT_search(int depth);
+void TT_insert(int point, int depth);
+
+

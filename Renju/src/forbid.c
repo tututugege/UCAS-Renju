@@ -1,13 +1,11 @@
 #include "../include/set.h"
-#include "../include/qipu.h"
 #include "../include/forbid.h"
 //禁手函数实现
 
 //活三关键位置为两边不能为黑棋,否则长连  并且
 //活四关键位置为中间不能是禁手(长连)
 int base[9] = {1, 3, 9, 27, 81, 243, 729, 2187, 6561}; // 将空位(0) 黑棋(1) 白棋(2) 视作三进制的012
-                                      // 棋形长度固定时 一个数字唯一确定一种棋形
-
+                                                       // 棋形长度固定时 一个数字唯一确定一种棋形
 int forbid(int i, int j) {
 
     fir[i][j] = BLACK;

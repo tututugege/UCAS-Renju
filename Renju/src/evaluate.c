@@ -1,30 +1,11 @@
 #include "../include/set.h"
-#include "../include/qipu.h"
-#define NUM_POINT 19683 
+#include "../include/evaluate.h"
 int black_point[10] = {10, 50, 100, 1000, 5000, 9000, 10000, 100000, 1000000};
 int white_point[10] = {10, 50, 100, 1000, 5000, 9000, 10000, 100000, 1000000};
 int point_table[NUM_POINT] = {0};
 
 //初始化评分表
-void init_point_table() {
-    int board[9] = {0};
-    int index[9];
-    int i, j, temp;
-    for (i = 0; i < NUM_POINT; i++) {
-        temp = i;
-        for (j = 0; j < 9; j++) {
-            board[8 - j] = temp % 3;
-            temp /= 3;
-        }
-        point_table[i] = init_evaluate(board);
-        temp = i;
-        for (j = 0; j < 9; j++) {
-            board[j] = temp % 3;
-            temp /= 3;
-        }
-        point_table[i] += init_evaluate(board);
-    }
-}
+
 
 int point_evaluate(int i, int j, int depth) {
     int black_evaluate[10] = {0};
@@ -51,12 +32,10 @@ int init_point_evaluate(int i, int j, int dx, int dy) {
 
     for (i -= 4*dx, j -= 4*dy; num < 9; num++, i += dx, j += dy) {
         if (within_range(i) && within_range(j)) {
-            // printf("%d ", fir[i][j]);
             index += fir[i][j] * base[num];
         }
     }
 
-    // printf("%d\n", point_table[index]);
     return point_table[index];
 }
 
@@ -147,3 +126,22 @@ int init_evaluate(int* board) {
     return point;
 }
 
+void init_point_table() {
+    int board[9] = {0};
+    int index[9];
+    int i, j, temp;
+    for (i = 0; i < NUM_POINT; i++) {
+        temp = i;
+        for (j = 0; j < 9; j++) {
+            board[8 - j] = temp % 3;
+            temp /= 3;
+        }
+        point_table[i] = init_evaluate(board);
+        temp = i;
+        for (j = 0; j < 9; j++) {
+            board[j] = temp % 3;
+            temp /= 3;
+        }
+        point_table[i] += init_evaluate(board);
+    }
+}

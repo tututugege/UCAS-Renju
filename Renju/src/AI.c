@@ -1,5 +1,5 @@
 #include "../include/set.h"
-#include "../include/qipu.h"
+#include "../include/AI.h"
 
 int AI_i = 7;
 int AI_j = 7;
@@ -10,8 +10,7 @@ clock_t time_b,time_e;
 
 head_node *list = NULL;      //当前申请的链表表头
 head_node *list_head = NULL; //申请链表的表头
-table* tt;  //置换表
-
+table* tt;
 //生成着法 即每个可以下棋的位置的节点相连
 tree get_memory() {
     tree head, p; 
@@ -22,7 +21,8 @@ tree get_memory() {
     p->bro = NULL;
     list->next = (head_node*)malloc(sizeof(head_node));
     list = list->next;
-    list->next = list->head = NULL;
+    list->next = NULL;
+    list->head = NULL;
     return head;
 }
 
@@ -172,7 +172,7 @@ void AI_operation() {
                 v = -alpha_beta(p, now_depth - 1, -beta, -alpha);
             reset_point(i, j);
 
-            printf("%d ", v);
+            // printf("%d ", v);
             if (v > alpha) {
                 found_PV = 1;
                 AI_i = p->position >> 4;
@@ -264,3 +264,35 @@ void resort(tree p, tree first_child) {
         first_child = sort(first_child, NULL);
     }
 }
+
+
+
+//对置换表长度取余的对应的下标
+int zobrist_hash(unsigned long long key) {
+    return (int)(key & (HASHSIZE - 1));
+}
+
+//初始化一个置换表
+table* init_table() {
+    int i;
+    table* p_table = (table*)malloc(sizeof(table));
+    p_table->data = (item*)malloc(sizeof(item) * HASHSIZE);
+    for (i = 0; i < HASHSIZE; i++) {
+        p_table->data[i].key = NULLKEY;
+    }
+    return p_table;
+}
+
+void TT_insert(int point, int depth) {
+    int index = zobrist_hash(now_key);
+    (tt->data)[index].depth = (char)depth; 
+    (tt->data)[index].key = now_key; 
+    (tt->data)[index].point = point; 
+}
+
+int TT_search(int depth) {
+    int index = zobrist_hash(now_key);
+    if (((tt->data)[index]).key != NULLKEY && ((tt->data)[index]).depth <= depth && (tt->data[index].key == now_key))
+        return tt->data[index].point;
+    else return NULLKEY;
+} 
