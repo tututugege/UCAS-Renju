@@ -10,6 +10,7 @@
 #define LASTBLACK 3 //刚下的黑棋
 #define LASTWHITE 4 //刚下的白棋
 #define LENGTH 15   //棋盘长度
+#define FULL -1
 
 #define BIT_0 0b111000000000000
 #define BIT_1 0b111100000000000

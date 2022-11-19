@@ -187,8 +187,8 @@ void AI_operation() {
             }
         }
     }
-
     free_all();
+
     end_t = clock();
     printf("总用时%d\n", end_t - start_t);
     printf("生成走法时间%d\n", generate_time);
