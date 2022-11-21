@@ -5,8 +5,6 @@ extern int player_j;
 int player_i = 0;
 int player_j = 0;
 int player = 1;
-int game_mode;  //游戏模式
-int player_color;      //玩家选择的棋色
 int fir[LENGTH][LENGTH] = {0};
 unsigned long long now_key = 0;
 unsigned long long zobrist[LENGTH][LENGTH][2] = {0};
@@ -48,8 +46,8 @@ int main() {
 			time_w += end_t - start_t;
 			step++;
 		}
-		set_board();
 		change_player();
+		set_board();
 	}
 	set_board();
 	if (result == BLACK) {
@@ -63,27 +61,18 @@ int main() {
 }
 
 void init_rand() {
-    int i, j;
-    int k, l;
-
+    int i, j, k;
     srand((unsigned int)time(NULL));
-    for (i = 0; i < LENGTH; i++) {
-        for (j = 0; j < LENGTH; j++) {
-    	    for(k = 0; k < 63; k++) {
-                zobrist[i][j][0] += rand() & 0b1;
-                zobrist[i][j][0] = zobrist[i][j][0] << 1;
-		    }
-            zobrist[i][j][0] += rand() & 0b1;
-        }
-    }
-    for (i = 0; i < LENGTH; i++) {
-        for (j = 0; j < LENGTH; j++) {
-    	    for(k = 0; k < 63; k++) {
-                zobrist[i][j][1] += rand() & 0b1;
-                zobrist[i][j][1] = zobrist[i][j][1] << 1;
-		    }
-            zobrist[i][j][1] += rand() & 0b1;
-        }
-    }
-}
 
+	for (k = 0; k < 2; k++) {
+		for (i = 0; i < LENGTH; i++) {
+			for (j = 0; j < LENGTH; j++) {
+				for(k = 0; k < 63; k++) {
+					zobrist[i][j][0] += rand() & 0b1;
+					zobrist[i][j][0] = zobrist[i][j][0] << 1;
+				}
+				zobrist[i][j][0] += rand() & 0b1;
+			}
+		}
+	}
+}

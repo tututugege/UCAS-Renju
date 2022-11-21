@@ -19,7 +19,7 @@ void set_board() {
     //每行第一个符号分三种边框情况和四种棋子情况特殊处理
     for (i = LENGTH - 1; i >= 0; i--) {    
         printf("%2d", i + 1);               //打印行标
-        if (fir[i][0] == 0) {
+        if (fir[i][0] == EMPTY) {
             if (i == LENGTH - 1) 
                 printf("┏");
             else if (i == 0) 
@@ -31,7 +31,7 @@ void set_board() {
        //每行第二个符号到倒数第二个符号可以批量处理
         //同样分为三种边框情况和四种棋子情况
         for (j = 1; j < LENGTH - 1; j++){   
-            if (fir[i][j] == 0) {
+            if (fir[i][j] == EMPTY) {
                 if (i == LENGTH - 1) 
                     printf("┳");
                 else if (i == 0) 
@@ -42,7 +42,7 @@ void set_board() {
                 print_piece(i, j);
         }
         //每行最后一个符号分三种边框情况和四种棋子情况
-        if (fir[i][LENGTH - 1] == 0) {
+        if (fir[i][LENGTH - 1] == EMPTY) {
             if (i == LENGTH - 1) 
                 printf("┓");
             else if (i == 0) 
@@ -139,11 +139,11 @@ int is_full() {
 void get_input() {
     int right_input = 0;
     char temp_j;
-    do { //若输入位置在棋盘内并且该位置无棋子则right_input为1 否则为0一直循环
-        //直到输入字母和数字在范围内才能出循环
+    do { 
         while (getchar() != '\n')
-            ;   //吸收输入流中多余内容 下同
+            ;   //清空输入流
         scanf("\n%c%d", &temp_j, &player_i);  //\n吸收残留的回车符 下同
+
         while (((temp_j < 'a' || temp_j > 'o') && (temp_j <'A' || temp_j >'O')) || (player_i <= 0 || player_i > LENGTH)) { 
             printf("输入字符非法，请重新输入\n");
             while (getchar() != '\n')
@@ -153,7 +153,7 @@ void get_input() {
         player_j = (temp_j >= 'a' && temp_j <='o') ? temp_j - 'a' : temp_j - 'A';
         player_i--;
         //判断输入位置是否已经有棋子
-        if (fir[player_i][player_j] != 0) {
+        if (fir[player_i][player_j]) {
             printf("输入位置有棋子，请重新输入 \n");
         } else if (player == WHITE || !forbid(player_i, player_j)) 
             right_input = 1;

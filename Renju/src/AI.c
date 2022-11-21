@@ -7,22 +7,24 @@ int node_num = 0;
 
 clock_t evaluate_time, generate_time, sort_time;
 clock_t time_b,time_e;
-
-head_node *list = NULL;      //当前申请的链表表头
-head_node *list_head = NULL; //申请链表的表头
+move_head_node *list = NULL;      //当前申请的链表表头
+move_head_node *list_head = NULL; //申请链表的表头
 table* tt;
-//生成着法 即每个可以下棋的位置的节点相连
+
+//申请内存
 tree get_memory() {
     tree head, p; 
 
-    head = p = list->head = (tree)malloc(sizeof(Node) * 80);
+    //一次性申请大内存比一次一次申请快
+    head = p = list->move_head = (tree)malloc(sizeof(Node) * 80);
     for (int i = 0; i < 79; i++, p++)
         p->bro = p + 1;
     p->bro = NULL;
-    list->next = (head_node*)malloc(sizeof(head_node));
+
+    list->next = (move_head_node*)malloc(sizeof(move_head_node));
     list = list->next;
     list->next = NULL;
-    list->head = NULL;
+    list->move_head = NULL;
     return head;
 }
 
@@ -33,9 +35,7 @@ tree get_move(int parent_point, int depth) {
     int value, index;
     int num = 0;
 
-    //预先malloc较大空间
     p = move_set = get_memory(); 
-
     for (i = 0; i < LENGTH; i++) {
         for (j = 0; j < LENGTH; j++) {
             value = 0;
@@ -97,6 +97,8 @@ int alpha_beta(tree pNode, int depth, int alpha, int beta) {
         time_b = clock();
         if (p->point == pNode->point) 
             p->point = move_evaluate(i, j, depth); //走法评估
+        else 
+            set_point(i, j);
         time_e = clock();
         evaluate_time += time_e - time_b;
 
@@ -117,11 +119,7 @@ int alpha_beta(tree pNode, int depth, int alpha, int beta) {
                 break;
         }
     }
-
-    time_b = clock();
     resort(p, pNode->first_child);
-    time_e = clock();
-    sort_time += time_e - time_b;
 
     return best;
 }
@@ -134,7 +132,7 @@ void AI_operation() {
     int found_PV = 0;
 
     evaluate_time = generate_time = sort_time = 0;
-    list = list_head = (head_node*)malloc(sizeof(head_node));
+    list = list_head = (move_head_node*)malloc(sizeof(move_head_node));
     tt = init_table();
     start_t = clock();
     head = get_move(0, 0);
@@ -151,10 +149,7 @@ void AI_operation() {
 
     //迭代加深  
     for (now_depth = 2; now_depth <= MAXDEPTH; now_depth += 1) {
-        time_b = clock();
         resort(p, head);
-        time_e = clock();
-        sort_time += time_e - time_b;
 
         r = NULL;
         beta = P_INFINITY;
@@ -172,7 +167,7 @@ void AI_operation() {
                 v = -alpha_beta(p, now_depth - 1, -beta, -alpha);
             reset_point(i, j);
 
-            // printf("%d ", v);
+            printf("%c%d %d ", j + 'a', i++, v);
             if (v > alpha) {
                 found_PV = 1;
                 AI_i = p->position >> 4;
@@ -186,6 +181,7 @@ void AI_operation() {
                 }
             }
         }
+        system("pause");
     }
     free_all();
 
@@ -201,7 +197,7 @@ void AI_operation() {
 void free_all() {
     for(list = list_head; list_head; list = list_head) {
         list_head = list_head->next;
-        free(list->head);
+        free(list->move_head);
         free(list);
     }
     free(tt->data);
@@ -252,7 +248,9 @@ tree merge(tree left, tree right) {
 }
 
 void resort(tree p, tree first_child) {
+    clock_t time_b, time_e;
     tree head, r;
+    time_b = clock();
 
     if ( p ) {
         head = p->bro;
@@ -263,9 +261,9 @@ void resort(tree p, tree first_child) {
     } else {
         first_child = sort(first_child, NULL);
     }
+    time_e = clock();
+    sort_time += time_e - time_b;
 }
-
-
 
 //对置换表长度取余的对应的下标
 int zobrist_hash(unsigned long long key) {

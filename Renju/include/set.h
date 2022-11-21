@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <time.h>
 
+#define EMPTY 0		//¿ÕÎ»
 #define BLACK 1 	//ºÚÆå	
 #define WHITE 2		//°×Æå
 #define LASTBLACK 3 //¸ÕÏÂµÄºÚÆå

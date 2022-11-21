@@ -14,11 +14,12 @@ typedef struct hash_item {
 typedef struct hash_table {
 	item *data;
 } table;
-//记录所有申请的节点地址 方便释放
-typedef struct head {
-	tree head;
-	struct head* next;
-} head_node;
+
+typedef struct move_head {
+	tree move_head;
+	struct move_head* next;
+} move_head_node;
+//链表记录所有申请的节点地址 方便释放
 
 extern table* tt;
 
