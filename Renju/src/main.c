@@ -52,12 +52,12 @@ int main() {
 		set_board();
 	}
 	set_board();
-	if (result == BLACK) {
+	if (result == BLACK) 
 		printf("黑棋赢\n");
-	}
-	else if(result == WHITE) {
+	else if(result == WHITE) 
 		printf("白棋赢\n");
-	}
+	else	
+		printf("棋盘满，平局\n");
 	printf("黑棋平均搜索时间%d\n白棋平均搜索时间%d\n总步数%d\n", time_b/(step/2), time_w/(step/2), step);
 	system("pause");
 }

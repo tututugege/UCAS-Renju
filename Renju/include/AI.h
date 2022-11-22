@@ -1,3 +1,6 @@
+#ifndef _AI_H_
+#define _AI_H
+
 #define MAXDEPTH 4   //搜索深度
 #define P_INFINITY 200000000
 #define N_INFINITY -200000000
@@ -38,3 +41,5 @@ table* init_table(); //初始化置换表
 int TT_search(int depth); //查表
 void TT_insert(int point, int depth); //插入数据
 int zobrist_hash(unsigned long long key); //对当前key取index
+
+#endif

@@ -70,7 +70,7 @@ void print_piece(int i, int j) {
         fir[i][j] = BLACK;
     }
     else {
-        printf("¡ð");
+        printf("¡÷");
         fir[i][j] = WHITE;
     }
 }

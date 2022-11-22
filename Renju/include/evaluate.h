@@ -1,3 +1,6 @@
+#ifndef _EVALUATE_H_
+#define _EVALUATE_H_
+
 #define one_1w 18//00200
 #define one_2w 6//00020
 #define one_3w 2//00002
@@ -44,6 +47,7 @@
 #define five_w 242   //22222   1000000 
 
 #define NUM_POINT 19683 
+#define NULLKEY 33554432
 
 void init_point_table();
 int init_evaluate(int* board);
@@ -53,4 +57,4 @@ int init_point_evaluate(int i, int j, int dx, int dy);
 int TT_search(int depth);
 void TT_insert(int point, int depth);
 
-
+#endif

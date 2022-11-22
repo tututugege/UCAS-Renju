@@ -11,8 +11,8 @@
 #define LASTBLACK 3 //刚下的黑棋
 #define LASTWHITE 4 //刚下的白棋
 #define LENGTH 15   //棋盘长度
-#define FULL -1
 
+//位棋盘
 #define BIT_0 0b111000000000000
 #define BIT_1 0b111100000000000
 #define BIT_2 0b111110000000000
@@ -28,8 +28,6 @@
 #define BIT_12 0b000000000011111
 #define BIT_13 0b000000000001111
 #define BIT_14 0b000000000000111
-
-#define NULLKEY 33554432
 
 typedef struct Node {
 	unsigned char position;	  //节点对应下法
@@ -56,4 +54,5 @@ int within_range(int i); //在0-14闭区间内
 void change_player();  //换人
 void set_point(int i, int j);
 void reset_point(int i, int j);
+
 #endif

@@ -66,9 +66,6 @@ tree get_move(int parent_point, int depth) {
     time_e = clock();
     generate_time += time_e - time_b;
 
-    // for (p = move_set; p; p = p->bro)
-    //     printf("%c%d ", j + 'a', i++);
-    // system("pause");
     return move_set;
 }
 
@@ -154,6 +151,9 @@ void AI_operation() {
     for (now_depth = 2; now_depth <= MAXDEPTH; now_depth += 1) {
         resort(p, &head);
 
+        //必须先初始化  否则当程序找不到合适走法就会覆盖上一轮对手走法
+        AI_i = head->position >> 4;
+        AI_j = head->position & LENGTH;
         r = NULL;
         beta = P_INFINITY;
         alpha = N_INFINITY;
@@ -170,7 +170,7 @@ void AI_operation() {
                 v = -alpha_beta(p, now_depth - 1, -beta, -alpha);
             reset_point(i, j);
 
-            // printf("%c%d %d ", j + 'a', i++, v);
+            printf("%c%d %d ", j + 'a', i++, v);
             if (v > alpha) {
                 found_PV = 1;
                 AI_i = p->position >> 4;
