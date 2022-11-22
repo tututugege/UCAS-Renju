@@ -11,6 +11,8 @@ void get_input();
 
 extern int player_i;
 extern int player_j;
+extern int AI_i;
+extern int AI_j;
 
 /*ÖğĞĞ´òÓ¡ÆåÅÌ*/
 void set_board() { 
@@ -69,7 +71,7 @@ void print_piece(int i, int j) {
     }
     else {
         printf("¡ğ");
-        fir[i][0] = WHITE;
+        fir[i][j] = WHITE;
     }
 }
 

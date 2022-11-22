@@ -2,6 +2,8 @@
 
 extern int player_i;
 extern int player_j;
+extern int AI_i;
+extern int AI_j;
 int player_i = 0;
 int player_j = 0;
 int player = 1;

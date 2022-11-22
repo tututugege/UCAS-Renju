@@ -31,8 +31,6 @@
 
 #define NULLKEY 33554432
 
-#ifndef _TREE_
-#define _TREE_
 typedef struct Node {
 	unsigned char position;	  //节点对应下法
 	int point;
@@ -42,14 +40,11 @@ typedef struct Node {
 } Node; //二叉树节点 儿子兄弟表示法
 
 typedef Node *tree; //树
-#endif
 
 extern int player;    //记录当前棋局的下棋人
 extern int fir[LENGTH][LENGTH];   //棋盘作为全局变量
 extern unsigned long long now_key; //当前键值
 extern int base[9];   //哈希匹配权值  三进制
-extern int AI_i;   
-extern int AI_j;      //ai决定的下棋坐标
 extern unsigned long long zobrist[LENGTH][LENGTH][2];   //置换表(transposition table, TT)
 extern int node_num;
 extern short bit_board[LENGTH];

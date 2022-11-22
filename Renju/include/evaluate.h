@@ -47,8 +47,8 @@
 
 void init_point_table();
 int init_evaluate(int* board);
-int point_evaluate(int i, int j, int depth);					//总评估的封装函数
-int move_evaluate(int i, int j, int depth);						//总评估的封装函数
+int point_evaluate(int i, int j, int depth);					
+int move_evaluate(int i, int j, int depth);					
 int init_point_evaluate(int i, int j, int dx, int dy);
 int TT_search(int depth);
 void TT_insert(int point, int depth);

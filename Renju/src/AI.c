@@ -66,6 +66,9 @@ tree get_move(int parent_point, int depth) {
     time_e = clock();
     generate_time += time_e - time_b;
 
+    // for (p = move_set; p; p = p->bro)
+    //     printf("%c%d ", j + 'a', i++);
+    // system("pause");
     return move_set;
 }
 
@@ -119,7 +122,7 @@ int alpha_beta(tree pNode, int depth, int alpha, int beta) {
                 break;
         }
     }
-    resort(p, pNode->first_child);
+    resort(p, &(pNode->first_child));
 
     return best;
 }
@@ -149,7 +152,7 @@ void AI_operation() {
 
     //迭代加深  
     for (now_depth = 2; now_depth <= MAXDEPTH; now_depth += 1) {
-        resort(p, head);
+        resort(p, &head);
 
         r = NULL;
         beta = P_INFINITY;
@@ -167,7 +170,7 @@ void AI_operation() {
                 v = -alpha_beta(p, now_depth - 1, -beta, -alpha);
             reset_point(i, j);
 
-            printf("%c%d %d ", j + 'a', i++, v);
+            // printf("%c%d %d ", j + 'a', i++, v);
             if (v > alpha) {
                 found_PV = 1;
                 AI_i = p->position >> 4;
@@ -181,7 +184,7 @@ void AI_operation() {
                 }
             }
         }
-        system("pause");
+        // system("pause");
     }
     free_all();
 
@@ -247,7 +250,7 @@ tree merge(tree left, tree right) {
     }
 }
 
-void resort(tree p, tree first_child) {
+void resort(tree p, tree* p_first_child) {
     clock_t time_b, time_e;
     tree head, r;
     time_b = clock();
@@ -255,11 +258,13 @@ void resort(tree p, tree first_child) {
     if ( p ) {
         head = p->bro;
         p->bro = NULL;
-        first_child = sort(first_child, NULL);
-        for(p = first_child; p; r = p, p = p->bro);
+        *p_first_child = sort(*p_first_child, NULL);
+        //有待改进 这个遍历似乎很浪费
+        for(p = *p_first_child; p; r = p, p = p->bro)
+            ;
         r->bro = head;
     } else {
-        first_child = sort(first_child, NULL);
+        *p_first_child = sort(*p_first_child, NULL);
     }
     time_e = clock();
     sort_time += time_e - time_b;
