@@ -8,8 +8,26 @@ int player_i = 0;
 int player_j = 0;
 int player = 1;
 int fir[LENGTH][LENGTH] = {0};
+unsigned short bit_board[LENGTH] = {0};
 unsigned long long now_key = 0;
 unsigned long long zobrist[LENGTH][LENGTH][2] = {0};
+short bit_set[LENGTH] = {
+	0b111000000000000,
+	0b111100000000000,
+	0b111110000000000,
+	0b011111000000000,
+	0b001111100000000,
+	0b000111110000000,
+	0b000011111000000,
+	0b000001111100000,
+	0b000000111110000,
+	0b000000011111000,
+	0b000000001111100,
+	0b000000000111110,
+	0b000000000011111,
+	0b000000000001111,
+	0b000000000000111
+};
 
 void init_rand();
 void init_point_table();

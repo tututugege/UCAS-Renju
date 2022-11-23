@@ -1,11 +1,10 @@
 #include "../include/set.h"
 #include "../include/evaluate.h"
-int black_point[10] = {10, 50, 100, 1000, 5000, 9000, 10000, 100000, 1000000};
-int white_point[10] = {10, 50, 100, 1000, 5000, 9000, 10000, 100000, 1000000};
+int black_point[10] = {5, 10, 50, 100, 500, 1000, 10000, 100000, 1000000};
+int white_point[10] = {5, 10, 50, 100, 500, 1000, 10000, 100000, 1000000};
 int point_table[NUM_POINT] = {0};
 
 //初始化评分表
-
 
 int point_evaluate(int i, int j, int depth) {
     int black_evaluate[10] = {0};
@@ -54,40 +53,48 @@ int init_evaluate(int* board) {
                 case 0:
                     break;
                 case one_1b:
-                case one_2b:
-                case one_3b:
                     black_evaluate[0]++;
                     break;
+                case one_2b:
+                case one_3b:
+                    black_evaluate[1]++;
+                    break;
                 case one_1w:
-                case one_2w:
-                case one_3w:
                     white_evaluate[0]++;
                     break;
+                case one_2w:
+                case one_3w:
+                    white_evaluate[1]++;
+                    break;
                 case two_1b:
-                    black_evaluate[1]++;
+                    black_evaluate[2]++;
                     break;
                 case two_2b:
                 case two_3b:
                 case two_4b:
                 case two_5b:
-                    black_evaluate[2]++;
+                    black_evaluate[3]++;
                     break;
                 case two_1w:
-                    white_evaluate[1]++;
+                    white_evaluate[2]++;
                     break;
                 case two_3w:
                 case two_2w:
                 case two_4w:
                 case two_5w:
-                    white_evaluate[2]++;
+                    white_evaluate[3]++;
                     break;
                 case three_1b:
+                    black_evaluate[5]++;
+                    break;
                 case three_2b:
                 case three_3b:
                 case three_4b:
                     black_evaluate[4]++;
                     break;
                 case three_1w:
+                    white_evaluate[5]++;
+                    break;
                 case three_2w:
                 case three_3w:
                 case three_4w:

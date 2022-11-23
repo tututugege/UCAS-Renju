@@ -77,6 +77,11 @@ int alpha_beta(tree pNode, int depth, int alpha, int beta) {
     int best = N_INFINITY;
     int i = pNode->position >> 4;
     int j = pNode->position & LENGTH;
+
+    //得分够高的情况下判断禁手
+    if (player == WHITE && pNode->point > 2000 && forbid(i, j))
+        return P_INFINITY;
+
     //先判断有没有已经五连
     if (win(i, j)) {
         return N_INFINITY;
@@ -184,6 +189,9 @@ void AI_operation() {
                 }
             }
         }
+
+        if (alpha >= 10000)
+            break;
         // system("pause");
     }
     free_all();

@@ -41,11 +41,13 @@ typedef Node *tree; //树
 
 extern int player;    //记录当前棋局的下棋人
 extern int fir[LENGTH][LENGTH];   //棋盘作为全局变量
+extern unsigned short bit_board[LENGTH];
 extern unsigned long long now_key; //当前键值
 extern int base[9];   //哈希匹配权值  三进制
 extern unsigned long long zobrist[LENGTH][LENGTH][2];   //置换表(transposition table, TT)
 extern int node_num;
 extern short bit_board[LENGTH];
+extern short bit_set[LENGTH];
 
 int is_full();
 int forbid(int i ,int j);//判断禁手
