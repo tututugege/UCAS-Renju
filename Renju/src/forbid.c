@@ -1,4 +1,3 @@
-#include "../include/set.h"
 #include "../include/forbid.h"
 //禁手函数实现
 

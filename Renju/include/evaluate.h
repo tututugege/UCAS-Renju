@@ -1,6 +1,8 @@
 #ifndef _EVALUATE_H_
 #define _EVALUATE_H_
 
+#include "../include/common.h"
+
 #define one_1w 18//00200
 #define one_2w 6//00020
 #define one_3w 2//00002
@@ -56,5 +58,8 @@ int move_evaluate(int i, int j, int depth);
 int init_point_evaluate(int i, int j, int dx, int dy);
 int TT_search(int depth);
 void TT_insert(int point, int depth);
+
+void set_point(int i, int j);
+void reset_point(int i, int j);
 
 #endif

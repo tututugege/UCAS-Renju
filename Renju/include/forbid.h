@@ -1,6 +1,8 @@
 #ifndef _FORBID_H_
 #define _FORBID_H_
 
+#include "../include/common.h"
+
 #define huo_three1  117 //三进制的011100
 #define huo_three2  39 //001110
 #define huo_three3  111 //011010

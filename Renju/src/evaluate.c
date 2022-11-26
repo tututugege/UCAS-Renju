@@ -1,4 +1,3 @@
-#include "../include/set.h"
 #include "../include/evaluate.h"
 int black_point[10] = {5, 10, 50, 100, 500, 1000, 10000, 100000, 1000000};
 int white_point[10] = {5, 10, 50, 100, 500, 1000, 10000, 100000, 1000000};

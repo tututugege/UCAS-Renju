@@ -2,21 +2,6 @@
 //棋盘基本操作
 //打印棋盘 下棋 判断输赢
 
-void AI_operation();//从这开始进入AI
-void set_board();   //打印当前局势的棋盘
-void set();          //下棋 
-void AI_set();       //AI下棋
-void print_piece(int i, int j);
-void get_input();
-void cache_move_board();
-void set_bit_board(int i, int j);
-void get_range(int*, int*, int);
-
-extern int player_i;
-extern int player_j;
-extern int AI_i;
-extern int AI_j;
-
 /*逐行打印棋盘*/
 void set_board() { 
     int i, j;
@@ -66,38 +51,42 @@ void set_board() {
 }
 
 void print_piece(int i, int j) {
-    if (fir[i][j] == BLACK) printf("●");
-    else if (fir[i][j] == WHITE) printf("○");
-    else if (fir[i][j] == LASTBLACK) {
+    switch (fir[i][j]) {
+    case BLACK:
+        printf("●");
+        break;
+    case WHITE:
+        printf("○");
+        break;
+    case LASTBLACK:
         printf("▲");
         fir[i][j] = BLACK;
-    }
-    else {
+        break;
+    default:
         printf("△");
         fir[i][j] = WHITE;
+        break;
     }
 }
 
 void set() {
     get_input();
-    fir[player_i][player_j] = player + 2;
-    now_key = now_key ^ zobrist[player][player_j][player - 1];
-    cache_move_board();
-    set_bit_board(player_i, player_j);
+    new_set(g_i, g_j);
 
-    if (player == WHITE) printf("白棋下在了%c%d位置\n", player_j + 'a', player_i + 1);
-    else printf("黑棋落子在%c%d\n", player_j + 'a', player_i + 1);
+    if (player == WHITE) 
+        printf("白棋下在了%c%d位置\n", g_j + 'a', g_i + 1);
+    else 
+        printf("黑棋落子在%c%d\n", g_j + 'a', g_i + 1);
 }
 
 void AI_set() {
     AI_operation();
-    fir[AI_i][AI_j] = player + 2;
-    now_key ^= zobrist[AI_i][AI_j][player - 1];
-    cache_move_board();
-    set_bit_board(AI_i, AI_j);
+    new_set(g_i, g_j);
 
-    if (player == WHITE) printf("白棋(AI)下在了%c%d位置\n", AI_j + 'a', AI_i + 1);
-    else printf("黑棋(AI)落子在%c%d\n", AI_j + 'a', AI_i + 1);
+    if (player == WHITE) 
+        printf("白棋(AI)下在了%c%d位置\n", g_j + 'a', g_i + 1);
+    else 
+        printf("黑棋(AI)落子在%c%d\n", g_j + 'a', g_i + 1);
 }
 
 int lineLength(int i, int j, int dx, int dy) {
@@ -151,27 +140,28 @@ void get_input() {
     do { 
         while (getchar() != '\n')
             ;   //清空输入流
-        scanf("\n%c%d", &temp_j, &player_i);  //\n吸收残留的回车符 下同
+        scanf("\n%c%d", &temp_j, &g_i);  //\n吸收残留的回车符 下同
 
-        while (((temp_j < 'a' || temp_j > 'o') && (temp_j <'A' || temp_j >'O')) || (player_i <= 0 || player_i > LENGTH)) { 
+        while (((temp_j < 'a' || temp_j > 'o') && (temp_j <'A' || temp_j >'O')) || (g_i <= 0 || g_i > LENGTH)) { 
             printf("输入字符非法，请重新输入\n");
             while (getchar() != '\n')
                 ;  
-            scanf("\n%c%d", &temp_j, &player_i);  
+            scanf("\n%c%d", &temp_j, &g_i);  
         }
-        player_j = (temp_j >= 'a' && temp_j <='o') ? temp_j - 'a' : temp_j - 'A';
-        player_i--;
+        g_j = (temp_j >= 'a' && temp_j <='o') ? temp_j - 'a' : temp_j - 'A';
+        g_i--;
         //判断输入位置是否已经有棋子
-        if (fir[player_i][player_j]) {
+        if (fir[g_i][g_j]) {
             printf("输入位置有棋子，请重新输入 \n");
-        } else if (player == WHITE || !forbid(player_i, player_j)) 
+        } else if (player == WHITE || !forbid(g_i, g_j)) 
             right_input = 1;
     } while (right_input != 1);
 }
 
-void cache_move_board() {
-    int start_j, end_j, i;
-    get_range(&start_j, &end_j, AI_j);    
-    for (i = 0; start_j != end_j; i++, start_j++)
-        g_last_buf[i] = bit_move_board[start_j];
+void new_set(int i, int j) {
+    fir[i][j] = player + 2;
+    now_key ^= zobrist[i][j][player - 1];
+    cache_move_board();
+    set_bit_board(i, j);
 }
+

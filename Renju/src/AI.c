@@ -1,10 +1,7 @@
-#include "../include/set.h"
 #include "../include/AI.h"
 
-void set_bit_board(int i, int j);
-
-int AI_i = 7;
-int AI_j = 7;
+int g_i = 7;
+int g_j = 7;
 int node_num = 0;
 
 clock_t evaluate_time, generate_time, sort_time;
@@ -35,7 +32,7 @@ int alpha_beta(tree pNode, int last_point, line* last_buf, tree last_move, int d
         else return -last_point;   
     }
     //获取走法
-    head = get_move(last_buf, last_move, pNode->position, j);
+    head = get_move(pNode->position, j, last_buf, last_move);
 
     for (p = head; p->position != NULLPOSITION; p++) {
         i = p->position >> 4;
@@ -54,7 +51,7 @@ int alpha_beta(tree pNode, int last_point, line* last_buf, tree last_move, int d
         } else 
             v = -alpha_beta(p, point, buf, head, depth - 1, -beta, -alpha);
         reset_point(i, j);
-        reset_bit_move(j, buf);
+        re_bit_move(j, buf);
         if (v > best) {
             best = v;
             if (v > alpha)
@@ -80,17 +77,15 @@ void AI_operation() {
     evaluate_time = generate_time = sort_time = 0;
     tt = init_table();
     start_t = clock();
-    head = get_move(g_last_buf, g_move, AI_i * (LENGTH + 1) + AI_j, AI_j);
+    head = get_move(g_i * (LENGTH + 1) + g_j, g_j, g_last_buf, g_move);
     free(g_move);
     g_move = head;
-    // for (p = head; p->position != NULLPOSITION; p++)
-    //     printf("%c%d\n", ((p->position) & LENGTH) + 'a', ((p->position) >> 4) + 1);
-    // system("pause");
+
     //迭代加深  
     for (now_depth = 1; now_depth <= MAXDEPTH; now_depth += 1) {
         //必须先初始化  否则当程序找不到合适走法就会覆盖上一轮对手走法
-        AI_i = head->position >> 4;
-        AI_j = head->position & LENGTH;
+        g_i = head->position >> 4;
+        g_j = head->position & LENGTH;
         beta = P_INFINITY;
         alpha = N_INFINITY;
 
@@ -106,21 +101,17 @@ void AI_operation() {
             } else 
                 v = -alpha_beta(p, point, buf, g_move, now_depth - 1, -beta, -alpha);
             reset_point(i, j);
-            reset_bit_move(j ,buf);
-            // printf("%c%d %d ", j + 'a', i++, v);
+            re_bit_move(j ,buf);
             if (v > alpha) {
                 found_PV = 1;
-                AI_i = p->position >> 4;
-                AI_j = p->position & LENGTH;
+                g_i = p->position >> 4;
+                g_j = p->position & LENGTH;
                 alpha = v;
             }
         }
-        // if (alpha >= 10000)
-        //     break;
-        // system("pause");
     }
-    free_all();
 
+    free_all();
     end_t = clock();
     printf("总用时%d\n", end_t - start_t);
     printf("生成走法时间%d\n", generate_time);
@@ -151,32 +142,3 @@ void reset_point(int i, int j) {
     bit_board[j] |= ~bit_set[i];
 }
 
-//对置换表长度取余的对应的下标
-int zobrist_hash(unsigned long long key) {
-    return (int)(key & (HASHSIZE - 1));
-}
-
-//初始化一个置换表
-table* init_table() {
-    int i;
-    table* p_table = (table*)malloc(sizeof(table));
-    p_table->data = (item*)malloc(sizeof(item) * HASHSIZE);
-    for (i = 0; i < HASHSIZE; i++) {
-        p_table->data[i].key = NULLKEY;
-    }
-    return p_table;
-}
-
-void TT_insert(int point, int depth) {
-    int index = zobrist_hash(now_key);
-    (tt->data)[index].depth = (char)depth; 
-    (tt->data)[index].key = now_key; 
-    (tt->data)[index].point = point; 
-}
-
-int TT_search(int depth) {
-    int index = zobrist_hash(now_key);
-    if (((tt->data)[index]).key != NULLKEY && ((tt->data)[index]).depth <= depth && (tt->data[index].key == now_key))
-        return tt->data[index].point;
-    else return NULLKEY;
-} 
