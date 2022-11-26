@@ -11,6 +11,7 @@
 #define LASTBLACK 3 //刚下的黑棋
 #define LASTWHITE 4 //刚下的白棋
 #define LENGTH 15   //棋盘长度
+#define NULLPOSITION 255
 
 //位棋盘
 #define BIT_0 0b111000000000000
@@ -29,25 +30,27 @@
 #define BIT_13 0b000000000001111
 #define BIT_14 0b000000000000111
 
-typedef struct Node {
+typedef struct iNode {
 	unsigned char position;	  //节点对应下法
-	int point;
-	int result_point;
-	struct Node *bro; 
-	struct Node *first_child;
-} Node; //二叉树节点 儿子兄弟表示法
+	short history_point;
+} Node;
+
+typedef unsigned short line;
 
 typedef Node *tree; //树
 
 extern int player;    //记录当前棋局的下棋人
 extern int fir[LENGTH][LENGTH];   //棋盘作为全局变量
-extern unsigned short bit_board[LENGTH];
+extern line bit_board[LENGTH];
 extern unsigned long long now_key; //当前键值
 extern int base[9];   //哈希匹配权值  三进制
 extern unsigned long long zobrist[LENGTH][LENGTH][2];   //置换表(transposition table, TT)
 extern int node_num;
-extern short bit_board[LENGTH];
-extern short bit_set[LENGTH];
+extern line bit_board[LENGTH];
+extern line bit_move_board[LENGTH];
+extern line bit_set[LENGTH];
+extern line g_last_buf[5];
+extern tree g_move;
 
 int is_full();
 int forbid(int i ,int j);//判断禁手

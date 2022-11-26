@@ -8,29 +8,20 @@ int player_i = 0;
 int player_j = 0;
 int player = 1;
 int fir[LENGTH][LENGTH] = {0};
-unsigned short bit_board[LENGTH] = {0};
 unsigned long long now_key = 0;
 unsigned long long zobrist[LENGTH][LENGTH][2] = {0};
-short bit_set[LENGTH] = {
-	0b111000000000000,
-	0b111100000000000,
-	0b111110000000000,
-	0b011111000000000,
-	0b001111100000000,
-	0b000111110000000,
-	0b000011111000000,
-	0b000001111100000,
-	0b000000111110000,
-	0b000000011111000,
-	0b000000001111100,
-	0b000000000111110,
-	0b000000000011111,
-	0b000000000001111,
-	0b000000000000111
-};
+line bit_board[LENGTH];
+line bit_move_board[LENGTH] = {0};
+line g_last_buf[5] = {0};
+tree g_move = NULL;
 
+//为了追求速度 牺牲空间预先缓存大量内容
 void init_rand();
 void init_point_table();
+void init_move_table();
+void init_bit_board();
+void set_bit_board(int i, int j);
+
 void set_board(); //打印当前局势的棋盘
 void set();      //下棋 
 void AI_set();    //AI下棋
@@ -39,16 +30,23 @@ int main() {
 	int result, step, i, j;
 	int time_b, time_w;
 	clock_t start_t, end_t;
+	g_move = (tree)malloc(sizeof(Node) * 2);
+	g_move->position = 119;
+	(g_move + 1)->position = NULLPOSITION;
 
 	init_rand();
 	init_point_table();
+	init_bit_board();
+	init_move_table();
 
 	step = time_b = time_w = 0;
 	AI_i = AI_j = 7;
 	fir[7][7] = player + 2;
-
+	set_bit_board(7, 7); 
+	now_key ^= zobrist[7][7][BLACK - 1];
 	change_player();
 	set_board();
+	printf("%d",sizeof(Node));
 
 	while (!(result = win(AI_i, AI_j)) && !is_full()) {
 		if (player == BLACK) {
@@ -69,6 +67,8 @@ int main() {
 		change_player();
 		set_board();
 	}
+	free(g_move);
+	g_move = NULL;
 	set_board();
 	if (result == BLACK) 
 		printf("黑棋赢\n");
@@ -95,4 +95,9 @@ void init_rand() {
 			}
 		}
 	}
+}
+
+void init_bit_board() {
+	for (int i = 0; i < LENGTH; i++)
+		bit_board[i] = ~0;
 }

@@ -8,6 +8,9 @@ void set();          //下棋
 void AI_set();       //AI下棋
 void print_piece(int i, int j);
 void get_input();
+void cache_move_board();
+void set_bit_board(int i, int j);
+void get_range(int*, int*, int);
 
 extern int player_i;
 extern int player_j;
@@ -79,6 +82,8 @@ void set() {
     get_input();
     fir[player_i][player_j] = player + 2;
     now_key = now_key ^ zobrist[player][player_j][player - 1];
+    cache_move_board();
+    set_bit_board(player_i, player_j);
 
     if (player == WHITE) printf("白棋下在了%c%d位置\n", player_j + 'a', player_i + 1);
     else printf("黑棋落子在%c%d\n", player_j + 'a', player_i + 1);
@@ -88,6 +93,8 @@ void AI_set() {
     AI_operation();
     fir[AI_i][AI_j] = player + 2;
     now_key ^= zobrist[AI_i][AI_j][player - 1];
+    cache_move_board();
+    set_bit_board(AI_i, AI_j);
 
     if (player == WHITE) printf("白棋(AI)下在了%c%d位置\n", AI_j + 'a', AI_i + 1);
     else printf("黑棋(AI)落子在%c%d\n", AI_j + 'a', AI_i + 1);
@@ -160,4 +167,11 @@ void get_input() {
         } else if (player == WHITE || !forbid(player_i, player_j)) 
             right_input = 1;
     } while (right_input != 1);
+}
+
+void cache_move_board() {
+    int start_j, end_j, i;
+    get_range(&start_j, &end_j, AI_j);    
+    for (i = 0; start_j != end_j; i++, start_j++)
+        g_last_buf[i] = bit_move_board[start_j];
 }
