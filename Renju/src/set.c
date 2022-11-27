@@ -93,8 +93,8 @@ int lineLength(int i, int j, int dx, int dy) {
     int k, l;
     int num = 1;
     int last_player = player % 2 + 1;
-    for (k = i + dx, l = j + dy; within_range(k) && within_range(l) && fir[k][l] == last_player; k += dx, l += dy, num++);    
-    for (k = i - dx, l = j - dy; within_range(k) && within_range(l) && fir[k][l] == last_player; k -= dx, l -= dy, num++);    
+    for (k = i + dx, l = j + dy; in_range(k, l) && fir[k][l] == last_player; k += dx, l += dy, num++);    
+    for (k = i - dx, l = j - dy; in_range(k, l) && fir[k][l] == last_player; k -= dx, l -= dy, num++);    
 
     return num;
 } //最长列棋子数目
@@ -112,8 +112,17 @@ int win(int i, int j) {
 
 //判断i是否在0-14闭区间内
 int within_range(int i) {
-    if (i >= 0 && i < LENGTH) return 1;
-    else return 0; 
+    if (i >= 0 && i < LENGTH) 
+        return 1;
+    else 
+        return 0; 
+}
+
+int in_range(int i, int j) {
+    if (within_range(i) && within_range (j))
+        return 1;
+    else
+        return 0;
 }
 
 //1变2 2变1
@@ -142,18 +151,17 @@ void get_input() {
             ;   //清空输入流
         scanf("\n%c%d", &temp_j, &g_i);  //\n吸收残留的回车符 下同
 
-        while (((temp_j < 'a' || temp_j > 'o') && (temp_j <'A' || temp_j >'O')) || (g_i <= 0 || g_i > LENGTH)) { 
+        while ((!within_range(temp_j - 'a') && !within_range(temp_j - 'A')) || within_range(--g_i)) { 
             printf("输入字符非法，请重新输入\n");
             while (getchar() != '\n')
                 ;  
             scanf("\n%c%d", &temp_j, &g_i);  
         }
-        g_j = (temp_j >= 'a' && temp_j <='o') ? temp_j - 'a' : temp_j - 'A';
-        g_i--;
+        g_j = (temp_j > 'Z') ? temp_j - 'a' : temp_j - 'A';
         //判断输入位置是否已经有棋子
-        if (fir[g_i][g_j]) {
+        if (fir[g_i][g_j]) 
             printf("输入位置有棋子，请重新输入 \n");
-        } else if (player == WHITE || !forbid(g_i, g_j)) 
+        else if (player == WHITE || !forbid(g_i, g_j)) 
             right_input = 1;
     } while (right_input != 1);
 }

@@ -1,8 +1,0 @@
-{
-    "files.associations": {
-        "ai.h": "c",
-        "zobrist.h": "c",
-        "evaluate.h": "c",
-        "common.h": "c"
-    }
-}

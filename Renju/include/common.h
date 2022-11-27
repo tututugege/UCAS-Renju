@@ -14,25 +14,28 @@
 
 typedef struct iNode {
 	unsigned char position;	  //节点对应下法
-	short history_point;
+	short history_score;
 } Node;
 
-typedef unsigned short line;
-typedef Node *tree; //树
+typedef unsigned char Chess_point;
+typedef unsigned short Line;
+typedef unsigned long long Board_key;
+typedef Node *Tree; //树
 
 extern int g_i, g_j;
 extern int player;    //记录当前棋局的下棋人
 extern int fir[LENGTH][LENGTH];   //棋盘作为全局变量
-extern unsigned long long now_key; //当前键值
-extern clock_t generate_time ,time_e, time_b;
+extern Board_key now_key; //当前键值
+extern clock_t sort_time, generate_time ,time_e, time_b;
 extern int node_num;
 extern int base[9];   //哈希匹配权值  三进制
-extern unsigned long long zobrist[LENGTH][LENGTH][2];   //置换表(transposition table, TT)
+extern Board_key zobrist[LENGTH][LENGTH][2];   //置换表(transposition table, TT)
 
-extern line g_last_buf[5];
-extern tree g_move;
+extern Line g_last_buf[5];
+extern Tree g_move;
 
 int within_range(int i); //在0-14闭区间内
+int in_range(int i, int j);
 int win(int i, int j); //判断输赢
 void change_player();  //换人
 int is_full();

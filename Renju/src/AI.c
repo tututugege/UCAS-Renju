@@ -1,7 +1,7 @@
 #include "../include/AI.h"
 
-int g_i = 7;
-int g_j = 7;
+int g_score = 80;
+int g_depth = 0;
 int node_num = 0;
 
 clock_t evaluate_time, generate_time, sort_time;
@@ -9,17 +9,17 @@ clock_t time_b,time_e;
 table* tt;
 
 //PVS 剪枝算法 负极大值 soft_fail
-int alpha_beta(tree pNode, int last_point, line* last_buf, tree last_move, int depth, int alpha, int beta) {
-    tree p, head;
-    line buf[5];
-    int v, point;
+int alpha_beta(Tree pNode, int last_score, Line* last_buf, Tree last_move, int depth, int alpha, int beta) {
+    Tree p, head;
+    Line buf[5];
+    int v, score;
     int found_PV = 0;
     int best = N_INFINITY;
     int i = pNode->position >> 4;
     int j = pNode->position & LENGTH;
 
     //得分够高的情况下判断禁手
-    if (player == WHITE && last_point > 2000 && forbid(i, j))
+    if (player == WHITE && last_score > 2000 && forbid(i, j))
         return P_INFINITY;
 
     //先判断有没有已经五连
@@ -28,33 +28,36 @@ int alpha_beta(tree pNode, int last_point, line* last_buf, tree last_move, int d
     } 
     //搜索层数耗尽
     if (depth <= 0) {
-        if(player == BLACK) return last_point;   
-        else return -last_point;   
+        if(player == BLACK) return last_score;   
+        else return -last_score;   
     }
     //获取走法
     head = get_move(pNode->position, j, last_buf, last_move);
 
+    g_depth++;
     for (p = head; p->position != NULLPOSITION; p++) {
+        node_num++;
         i = p->position >> 4;
         j = p->position & LENGTH;
         buf_bit_move(j, buf);
         time_b = clock();
-        point = last_point + move_evaluate(i, j, depth); //走法评估
+        score = move_evaluate(i, j, last_score, depth); //走法评估
         time_e = clock();
         evaluate_time += time_e - time_b;
 
         //如果找到PV走法 用极小窗口
         if (found_PV) {
-            v = -alpha_beta(p, point, buf, head, depth - 1, -alpha - 1, -alpha);
+            v = -alpha_beta(p, score, buf, head, depth - 1, -alpha - 1, -alpha);
             if (v > alpha && v < beta)
-                v = -alpha_beta(p, point, buf, head, depth - 1, -beta, -alpha);
+                v = -alpha_beta(p, score, buf, head, depth - 1, -beta, -alpha);
         } else 
-            v = -alpha_beta(p, point, buf, head, depth - 1, -beta, -alpha);
+            v = -alpha_beta(p, score, buf, head, depth - 1, -beta, -alpha);
         reset_point(i, j);
         re_bit_move(j, buf);
         if (v > best) {
             best = v;
             if (v > alpha)
+                insert_history(p->position, g_depth);
                 alpha = v;
             if (v >= beta)
                 break;
@@ -62,15 +65,16 @@ int alpha_beta(tree pNode, int last_point, line* last_buf, tree last_move, int d
     }
     free(head);
     head = NULL;
+    g_depth--;
     // 这里释放内存到第十步就会堆错误
     return best;
 }
 
 void AI_operation() {
     clock_t start_t, end_t;
-    Node *head, *p;
-    line buf[5];
-    int alpha, beta, now_depth, point;
+    Tree head, p;
+    Line buf[5];
+    int alpha, beta, now_depth, score, buf_score;
     int v, i, j;
     int found_PV = 0;
 
@@ -86,38 +90,48 @@ void AI_operation() {
         //必须先初始化  否则当程序找不到合适走法就会覆盖上一轮对手走法
         g_i = head->position >> 4;
         g_j = head->position & LENGTH;
+        buf_score = 0;
         beta = P_INFINITY;
         alpha = N_INFINITY;
 
+        g_depth++;
         for (p = head; p->position != NULLPOSITION; p++) {
             i = p->position >> 4;
             j = p->position & LENGTH;
             buf_bit_move(j, buf);
-            point = move_evaluate(i , j, now_depth);
+            score = move_evaluate(i , j, g_score, now_depth);
             if (found_PV) {
-                v = -alpha_beta(p, point, buf, g_move, now_depth - 1, -alpha - 1, -alpha);
+                v = -alpha_beta(p, score, buf, g_move, now_depth - 1, -alpha - 1, -alpha);
                 if (v > alpha)
-                    v = -alpha_beta(p, point, buf, g_move, now_depth - 1, -beta, -alpha);
+                    v = -alpha_beta(p, score, buf, g_move, now_depth - 1, -beta, -alpha);
             } else 
-                v = -alpha_beta(p, point, buf, g_move, now_depth - 1, -beta, -alpha);
+                v = -alpha_beta(p, score, buf, g_move, now_depth - 1, -beta, -alpha);
             reset_point(i, j);
             re_bit_move(j ,buf);
             if (v > alpha) {
+                // insert_history(p->position, now_depth);
                 found_PV = 1;
-                g_i = p->position >> 4;
-                g_j = p->position & LENGTH;
+                g_i = i;
+                g_j = j;
+                buf_score = score;
                 alpha = v;
             }
         }
+        g_depth--;
     }
 
+    g_score = buf_score;
     free_all();
+    clear_history_table();
+
     end_t = clock();
     printf("总用时%d\n", end_t - start_t);
     printf("生成走法时间%d\n", generate_time);
     printf("排序时间%d\n", sort_time);
     printf("评估时间%d\n", evaluate_time);
     printf("节点数目%d\n", node_num);
+
+    printf("%d\n", g_score);
     node_num = 0;
 }
 

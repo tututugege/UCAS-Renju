@@ -1,12 +1,14 @@
 #include "../include/main.h"
 #include "../include/common.h"
 
+int g_i = 7;
+int g_j = 7;
 int player = 1;
 int fir[LENGTH][LENGTH] = {0};
-unsigned long long now_key = 0;
-unsigned long long zobrist[LENGTH][LENGTH][2] = {0};
+Board_key now_key = 0;
+Board_key zobrist[LENGTH][LENGTH][2] = {0};
 
-tree g_move = NULL;
+Tree g_move = NULL;
 
 int main() {
 	int result, step, i, j;
@@ -19,13 +21,10 @@ int main() {
 	init_move_table();
 
 	step = time_b = time_w = 0;
-	g_i = g_j = 7;
-	fir[7][7] = player + 2;
-	set_bit_board(7, 7); 
-	now_key ^= zobrist[7][7][BLACK - 1];
+	fir[g_i][g_j] = player + 2;
+	now_key ^= zobrist[g_i][g_j][BLACK - 1];
 	change_player();
 	set_board();
-	printf("%d",sizeof(Node));
 
 	while (!(result = win(g_i, g_j)) && !is_full()) {
 		if (player == BLACK) {

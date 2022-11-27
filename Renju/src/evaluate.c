@@ -1,40 +1,49 @@
 #include "../include/evaluate.h"
 int black_point[10] = {5, 10, 50, 100, 500, 1000, 10000, 100000, 1000000};
 int white_point[10] = {5, 10, 50, 100, 500, 1000, 10000, 100000, 1000000};
-int point_table[NUM_POINT] = {0};
+int score_table[NUM_POINT] = {0};
 
 //初始化评分表
 
 int point_evaluate(int i, int j, int depth) {
-    int black_evaluate[10] = {0};
-    int white_evaluate[10] = {0};
-    int point; 
-
-    if ((point = TT_search(depth - 1)) == NULLKEY) { 
-        point = init_point_evaluate(i, j, 1, 0) + init_point_evaluate(i, j, 0, 1) + init_point_evaluate(i, j, 1, 1) + init_point_evaluate(i, j, 1, -1);
-        TT_insert(point, depth);
-    }
-    return point;
+    return init_point_evaluate(i, j, 1, 0) + init_point_evaluate(i, j, 0, 1) + \
+    init_point_evaluate(i, j, 1, 1) + init_point_evaluate(i, j, 1, -1);
 }
 
-int move_evaluate(int i, int j, int depth) {
-    int point = point_evaluate(i, j, depth);
+int move_evaluate(int i, int j, int board_score, int depth) {
+    int score; 
+
     set_point(i, j);
-    point += point_evaluate(i, j, depth);
-    return point;
+    if ((score = TT_search(depth - 1)) == NULLKEY) {
+        score = board_score + point_evaluate(i, j, depth);
+        TT_insert(score, depth - 1);
+    }
+    return score;
 }
 
 int init_point_evaluate(int i, int j, int dx, int dy) {
     int num = 0;
-    int index = 0; 
+    int index1, index2, search_i, search_j; 
 
-    for (i -= 4*dx, j -= 4*dy; num < 9; num++, i += dx, j += dy) {
-        if (within_range(i) && within_range(j)) {
-            index += fir[i][j] * base[num];
-        }
+    index1 = 0;
+    search_i = i - 4*dx;
+    search_j = j - 4*dy;
+    while (search_i != i || search_j != j) { 
+        if (in_range(search_i, search_j)) 
+            index1 += fir[search_i][search_j] * base[num];
+        search_i += dx;
+        search_j += dy;
+        num++;
+    } 
+    
+    index2 = fir[i][j] * base[num++];
+    for (i += dx, j += dy; num < 9; i += dx, j += dy, num++) {
+        if (in_range(i ,j))
+            index1 += fir[i][j] * base[num];
     }
 
-    return point_table[index];
+    index2 += index1;
+    return score_table[index2] - score_table[index1];
 }
 
 int init_evaluate(int* board) {
@@ -42,7 +51,7 @@ int init_evaluate(int* board) {
     int value;
     int black_evaluate[10] = {0};
     int white_evaluate[10] = {0};
-    int point = 0;
+    int score = 0;
 
     for (now_i = 0; now_i < 5; now_i += 1) {
         value = 0;
@@ -127,9 +136,9 @@ int init_evaluate(int* board) {
         }
     }
     for (int i = 0; i < 10; i++) {
-        point += black_evaluate[i]*black_point[i] - white_evaluate[i]*white_point[i];
+        score += black_evaluate[i]*black_point[i] - white_evaluate[i]*white_point[i];
     }
-    return point;
+    return score;
 }
 
 void init_point_table() {
@@ -142,12 +151,12 @@ void init_point_table() {
             board[8 - j] = temp % 3;
             temp /= 3;
         }
-        point_table[i] = init_evaluate(board);
+        score_table[i] = init_evaluate(board);
         temp = i;
         for (j = 0; j < 9; j++) {
             board[j] = temp % 3;
             temp /= 3;
         }
-        point_table[i] += init_evaluate(board);
+        score_table[i] += init_evaluate(board);
     }
 }

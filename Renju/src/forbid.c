@@ -124,16 +124,16 @@ int isHuoThree(int i, int j, int dx, int dy) {
     int index1; //加权算术的标号
     int index2 = 0; //需要计算情况的标号
 
-    for (now_i = i - dx, now_j = j - dy; index2 < 4 && within_range(now_i) && within_range(now_j); now_i -= dx, now_j -= dy, index2++) {
+    for (now_i = i - dx, now_j = j - dy; index2 < 4 && in_range(now_i, now_j); now_i -= dx, now_j -= dy, index2++) {
         value = 0;
         search_i = now_i - dx;
         search_j = now_j - dy;
-        if (within_range(search_i) && within_range(search_j) && fir[search_i][search_j] == BLACK) 
+        if (in_range(search_i, search_j) && fir[search_i][search_j] == BLACK) 
             continue; //边上有黑棋 会因长连禁手无法构成活三
 
         search_i = now_i;
         search_j = now_j;
-        for (index1 = 0; index1 < 6 && within_range(search_i) && within_range(search_j); index1++, search_i += dx, search_j += dy) {
+        for (index1 = 0; index1 < 6 && in_range(search_i, search_j); index1++, search_i += dx, search_j += dy) {
             if (fir[search_i][search_j] == WHITE) break;
             else value += fir[search_i][search_j] * base[index1];
         } 
@@ -142,7 +142,7 @@ int isHuoThree(int i, int j, int dx, int dy) {
         end_j = now_j + index1*dy;
 
         if(index1 < 6) continue;
-        else if(!within_range(end_i) || !within_range(end_j) || fir[end_i][end_j] != BLACK) {
+        else if(!in_range(end_i, end_j) || fir[end_i][end_j] != BLACK) {
             switch (value) {
                 case huo_three1:
                     key_i = now_i + dx*1;  

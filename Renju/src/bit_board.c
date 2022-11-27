@@ -1,7 +1,8 @@
 #include "../include/bit_board.h"
+#include "../include/history.h"
 
 unsigned long long move_table[MOVE_NUM];
-line bit_move_set[LENGTH] = {
+Line bit_move_set[LENGTH] = {
 	0b0111000000000000,
 	0b0111100000000000,
 	0b0111110000000000,
@@ -19,7 +20,7 @@ line bit_move_set[LENGTH] = {
 	0b0000000000000111
 };
 
-line bit_set[LENGTH] = {
+Line bit_set[LENGTH] = {
 	0b1011111111111111,
 	0b1101111111111111,
 	0b1110111111111111,
@@ -37,9 +38,9 @@ line bit_set[LENGTH] = {
 	0b1111111111111110
 };
 
-line bit_board[LENGTH];
-line bit_move_board[LENGTH] = {0};
-line g_last_buf[5] = {0};
+Line bit_board[LENGTH];
+Line bit_move_board[LENGTH] = {0};
+Line g_last_buf[5] = {0};
 
 //位棋盘bit_board由15个short(2字节16位)组成 0表示该位有棋子
 //走法位棋盘bit_move_board中 1表示为当前有价值的走法(两步内有其他棋子)
@@ -57,7 +58,8 @@ void init_move_table() {
     int index1, index2, temp;
     unsigned long long val;
 
-	g_move = (tree)malloc(sizeof(Node) * 2);
+    set_bit_board(7, 7);
+	g_move = (Tree)malloc(sizeof(Node) * 2);
 	g_move->position = 119;
 	(g_move + 1)->position = NULLPOSITION;
 
@@ -76,43 +78,46 @@ void init_move_table() {
 }
 
 //获取走法
-tree get_move(int position, int j, line* last_buf, tree last_move) {           
+Tree get_move(int position, int j, Line* last_buf, Tree last_move) {           
     time_b = clock();
-    tree move_set, p, q;
+    Tree move_set, p, q;
     int index;
 
     //直接申请足够大内存比一个一个申请更快
-    move_set = (tree)malloc(sizeof(Node)*200); 
+    move_set = (Tree)malloc(sizeof(Node)*200); 
     index = get_new_move(move_set, last_buf, j);  
     node_num += index;
 
     //获得新走法后直接加上上一步的走法
     //需要去除上一步下的位置
-    for (p = move_set + index, q = last_move; q->position != position; p++, q++) {
+    for (p = move_set + index, q = last_move; q->position != position; p++, q++, index++) {
         p->position = q->position;
-        p->history_point = 0;
-        node_num++;
+        p->history_score = get_history(position);
         //查历史表
     }
     q++;
-    for (; q->position != NULLPOSITION; p++, q++){
+    for (; q->position != NULLPOSITION; p++, q++, index++){
         p->position = q->position;
-        p->history_point = 0;
-        node_num++;
+        p->history_score = get_history(position);
         //查历史表
     }
     p->position = NULLPOSITION;
-
     time_e = clock();
     generate_time += time_e - time_b;
+       
+    quick_sort(move_set, 0, index - 1);
+    time_e = clock();
+    sort_time += time_e - time_b;
+ 
     return move_set;
 }
 
 //根据缓存的buf和当前位置5*5取余内取异或获取新走法,返回新走法数目
-int get_new_move(tree move_set, line* last_buf, int j) {
+int get_new_move(Tree move_set, Line* last_buf, int j) {
     int start_j, end_j, i, index, buf_j;
     unsigned long long val;
-    line new_move;
+    Line new_move;
+    int position;
 
     index = 0;
     get_range(&start_j, &end_j, j);
@@ -122,7 +127,8 @@ int get_new_move(tree move_set, line* last_buf, int j) {
         val = move_table[new_move];
         while (val) {
             i = val & 0b1111;
-            move_set[index].position = i*(LENGTH + 1) + start_j;
+            move_set[index].position = position =  i*(LENGTH + 1) + start_j;
+            move_set[index].history_score = get_history(position);
             val = val >> 4;
             index++;
         }
@@ -143,7 +149,7 @@ void set_bit_board(int i, int j) {
     }
 }
 
-void re_bit_move(int j, line* buf) {
+void re_bit_move(int j, Line* buf) {
     int start_j, end_j, i;
 
     get_range(&start_j, &end_j, j);
@@ -151,7 +157,7 @@ void re_bit_move(int j, line* buf) {
         bit_move_board[start_j] = buf[i];
 }
 
-void buf_bit_move(int j, line* buf) {
+void buf_bit_move(int j, Line* buf) {
     int start_j, end_j, i;
 
     get_range(&start_j, &end_j, j);
@@ -187,8 +193,7 @@ void get_range(int *pstart_j, int *pend_j, int j) {
 
 void cache_move_board() {
     int start_j, end_j, i;
-    get_range(&start_j, &end_j, g_i);    
+    get_range(&start_j, &end_j, g_j);    
     for (i = 0; start_j != end_j; i++, start_j++)
         g_last_buf[i] = bit_move_board[start_j];
 }
-

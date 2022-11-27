@@ -5,17 +5,16 @@ int zobrist_hash(unsigned long long key) {
 }
 
 void init_rand() {
-    int i, j, k;
+    int i, j, k, l;
     srand((unsigned int)time(NULL));
 
-	for (k = 0; k < 2; k++) {
-		for (i = 0; i < LENGTH; i++) {
-			for (j = 0; j < LENGTH; j++) {
-				for(k = 0; k < 63; k++) {
-					zobrist[i][j][0] += rand() & 0b1;
-					zobrist[i][j][0] = zobrist[i][j][0] << 1;
+	for (i = 0; i < LENGTH; i++) {
+		for (j = 0; j < LENGTH; j++) {
+			for (k = 0; k < 2; k++) {
+				for(l = 0; l < 64; l++) {
+					zobrist[i][j][k] = zobrist[i][j][k] << 1;
+					zobrist[i][j][k] += rand() & 0b1;
 				}
-				zobrist[i][j][0] += rand() & 0b1;
 			}
 		}
 	}
