@@ -7,7 +7,7 @@
 #include "../include/zobrist.h"
 #include "../include/history.h"
 
-#define MAXDEPTH 5   //搜索深度
+#define MAXDEPTH 4     //搜索深度
 #define P_INFINITY 200000000
 #define N_INFINITY -200000000
 

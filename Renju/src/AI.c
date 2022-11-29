@@ -3,6 +3,7 @@
 int g_score = 80;
 int g_depth = 0;
 int node_num = 0;
+int buf_score = 0;
 
 clock_t evaluate_time, generate_time, sort_time;
 clock_t time_b,time_e;
@@ -70,13 +71,43 @@ int alpha_beta(Tree pNode, int last_score, Line* last_buf, Tree last_move, int d
     return best;
 }
 
+void pvs(Tree head, int depth) {
+    Tree p;
+    Line buf[5];
+    int i, j, score, v;
+    int alpha = N_INFINITY;
+    int found_PV = N_INFINITY;
+
+    g_depth++;
+    for (p = head; p->position != NULLPOSITION; p++) {
+        i = p->position >> 4;
+        j = p->position & LENGTH;
+        buf_bit_move(j, buf);
+        score = move_evaluate(i , j, g_score, depth);
+        if (found_PV) {
+            v = -alpha_beta(p, score, buf, g_move, depth - 1, -alpha - 1, -alpha);
+            if (v > alpha)
+                v = -alpha_beta(p, score, buf, g_move, depth - 1, N_INFINITY, -alpha);
+        } else 
+            v = -alpha_beta(p, score, buf, g_move, depth - 1, N_INFINITY, -alpha);
+        reset_point(i, j);
+        re_bit_move(j ,buf);
+        if (v > alpha) {
+            // insert_history(p->position, now_depth);
+            found_PV = 1;
+            g_i = i;
+            g_j = j;
+            buf_score = score;
+            alpha = v;
+        }
+    }
+    g_depth--;
+}
+
 void AI_operation() {
     clock_t start_t, end_t;
-    Tree head, p;
-    Line buf[5];
-    int alpha, beta, now_depth, score, buf_score;
-    int v, i, j;
-    int found_PV = 0;
+    Tree head;
+    int now_depth;
 
     evaluate_time = generate_time = sort_time = 0;
     tt = init_table();
@@ -88,38 +119,11 @@ void AI_operation() {
     //迭代加深  
     for (now_depth = 1; now_depth <= MAXDEPTH; now_depth += 1) {
         //必须先初始化  否则当程序找不到合适走法就会覆盖上一轮对手走法
+        pvs(head, now_depth);
         g_i = head->position >> 4;
         g_j = head->position & LENGTH;
-        buf_score = 0;
-        beta = P_INFINITY;
-        alpha = N_INFINITY;
 
-        g_depth++;
-        for (p = head; p->position != NULLPOSITION; p++) {
-            i = p->position >> 4;
-            j = p->position & LENGTH;
-            buf_bit_move(j, buf);
-            score = move_evaluate(i , j, g_score, now_depth);
-            if (found_PV) {
-                v = -alpha_beta(p, score, buf, g_move, now_depth - 1, -alpha - 1, -alpha);
-                if (v > alpha)
-                    v = -alpha_beta(p, score, buf, g_move, now_depth - 1, -beta, -alpha);
-            } else 
-                v = -alpha_beta(p, score, buf, g_move, now_depth - 1, -beta, -alpha);
-            reset_point(i, j);
-            re_bit_move(j ,buf);
-            if (v > alpha) {
-                // insert_history(p->position, now_depth);
-                found_PV = 1;
-                g_i = i;
-                g_j = j;
-                buf_score = score;
-                alpha = v;
-            }
-        }
-        g_depth--;
     }
-
     g_score = buf_score;
     free_all();
     clear_history_table();
