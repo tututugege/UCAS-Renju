@@ -7,14 +7,6 @@ void clear_history_table() {
         history_table[i] = 0;
 }
 
-int get_history(Chess_point position){
-    return history_table[position];
-}
-
-void insert_history(int position, int depth) {
-    history_table[position] += (1 << depth);
-} 
-
 void quick_sort(Tree move_set, int left, int right) {
     int i, j, std;
 

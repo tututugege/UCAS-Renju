@@ -1,8 +1,6 @@
 #include "../include/zobrist.h"
 //对置换表长度取余的对应的下标
-int zobrist_hash(unsigned long long key) {
-    return (int)(key & (HASHSIZE - 1));
-}
+int num_zobrist = 0;
 
 void init_rand() {
     int i, j, k, l;
@@ -32,15 +30,24 @@ table* init_table() {
 }
 
 void TT_insert(int point, int depth) {
-    int index = zobrist_hash(now_key);
+    int index = ZOBRIST(now_key);
     (tt->data)[index].depth = (char)depth; 
     (tt->data)[index].key = now_key; 
     (tt->data)[index].point = point; 
 }
 
 int TT_search(int depth) {
-    int index = zobrist_hash(now_key);
-    if (((tt->data)[index]).key != NULLKEY && ((tt->data)[index]).depth <= depth && (tt->data[index].key == now_key))
+    int index = ZOBRIST(now_key);
+    if (((tt->data)[index]).key != NULLKEY && ((tt->data)[index]).depth <= depth && (tt->data[index].key == now_key)) {
+        num_zobrist++;
         return tt->data[index].point;
+    }
     else return NULLKEY;
 } 
+
+void TT_free() {
+    free(tt->data);
+    tt->data = NULL;
+    free(tt);
+    tt = NULL;
+}

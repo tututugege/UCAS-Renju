@@ -1,13 +1,15 @@
 #include "../include/forbid.h"
 //禁手函数实现
+//禁手写的比较早 因此经验不足比较丑陋 有待优化
 
 //活三关键位置为两边不能为黑棋,否则长连  并且
 //活四关键位置为中间不能是禁手(长连)
 int base[9] = {1, 3, 9, 27, 81, 243, 729, 2187, 6561}; // 将空位(0) 黑棋(1) 白棋(2) 视作三进制的012
+
                                                        // 棋形长度固定时 一个数字唯一确定一种棋形
 int forbid(int i, int j) {
 
-    fir[i][j] = BLACK;
+    renju[i][j] = BLACK;
     int num_four = 0;
     int num_three = 0;
     int max_length = 1;
@@ -26,10 +28,10 @@ int forbid(int i, int j) {
         max_length = line4;
 
     if (max_length > 5) {
-        fir[i][j] = 0;
-        if (line1 == 5 && line2 == 5 && line3 == 5 && line4 == 5) {
+        renju[i][j] = 0;
+        if (line1 == 5 && line2 == 5 && line3 == 5 && line4 == 5) 
             return 0; //最简单的长连情况
-        } else 
+        else 
             return 1; 
     }
 
@@ -45,10 +47,10 @@ int forbid(int i, int j) {
     num_three += isHuoThree(i, j, 1, 0) + isHuoThree(i, j, 0, 1) + isHuoThree(i, j, 1, 1) + isHuoThree(i, j, 1, -1); 
 
     if (num_four >= 2 || num_three >= 2) {
-        fir[i][j] = 0; 
+        renju[i][j] = 0; 
         return 1;
     } else {
-        fir[i][j] = 0;
+        renju[i][j] = 0;
         return 0;
     }
 }
@@ -60,18 +62,20 @@ int isHuoFour(int i, int j, int dx, int dy) {
     int l_edge = 1;
     int r_edge = 1;
 
-    for (now_i = i, now_j = j, num = 0; fir[now_i][now_j] == BLACK && within_range(now_i) && within_range(now_j); now_i += dx, now_j += dy, num++);    
+    for (now_i = i, now_j = j, num = 0; \
+    renju[now_i][now_j] == BLACK && in_range(now_i, now_j); now_i += dx, now_j += dy, num++);    
 
-    if (now_i == LENGTH || now_j == -1 || now_j == LENGTH || fir[now_i][now_j] == WHITE) {
+    if (now_i == LENGTH || now_j == -1 || now_j == LENGTH || renju[now_i][now_j] == WHITE) {
         l_edge = 0; //判断一边
     } else {
         l_i = now_i;
         l_j = now_j;
     }
 
-    for (now_i = i - dx, now_j = j - dy; within_range(now_i) && within_range(now_j) && fir[now_i][now_j] == BLACK; now_i -= dx, now_j -= dy, num++);    
+    for (now_i = i - dx, now_j = j - dy; \
+    in_range(now_i, now_j) && renju[now_i][now_j] == BLACK; now_i -= dx, now_j -= dy, num++);    
 
-    if (now_i == -1 || now_j == -1 || now_j == LENGTH || fir[now_i][now_j] == WHITE) {
+    if (now_i == -1 || now_j == -1 || now_j == LENGTH || renju[now_i][now_j] == WHITE) {
         r_edge = 0; 
     } else {
         r_i = now_i;
@@ -90,15 +94,17 @@ int isChongFour(int i, int j, int dx, int dy) {
     int index1, index2;
     index2 = 0;
 
-    for (now_i = i, now_j = j; index2 < 5 && within_range(now_i) && within_range(now_j); now_i -= dx, now_j -= dy, index2++) { 
+    for (now_i = i, now_j = j; index2 < 5 && in_range(now_i, now_j); \
+    now_i -= dx, now_j -= dy, index2++) { 
         value = 0;
         search_i = now_i;
         search_j = now_j;
-        for (index1 = 0; index1 < 5 && within_range(search_i) && within_range(search_j); index1++, search_i += dx, search_j += dy) {
-            if (fir[search_i][search_j] == WHITE) 
+        for (index1 = 0; index1 < 5 && in_range(search_i, search_j); \
+        index1++, search_i += dx, search_j += dy) {
+            if (renju[search_i][search_j] == WHITE) 
                 break;
             else 
-                value += fir[search_i][search_j] * base[index1];
+                value += renju[search_i][search_j] * base[index1];
         } 
         if (index1 == 5) {
             if (value == chong_four_1) {
@@ -124,25 +130,27 @@ int isHuoThree(int i, int j, int dx, int dy) {
     int index1; //加权算术的标号
     int index2 = 0; //需要计算情况的标号
 
-    for (now_i = i - dx, now_j = j - dy; index2 < 4 && in_range(now_i, now_j); now_i -= dx, now_j -= dy, index2++) {
+    for (now_i = i - dx, now_j = j - dy; index2 < 4 && in_range(now_i, now_j); \
+    now_i -= dx, now_j -= dy, index2++) {
         value = 0;
         search_i = now_i - dx;
         search_j = now_j - dy;
-        if (in_range(search_i, search_j) && fir[search_i][search_j] == BLACK) 
+        if (in_range(search_i, search_j) && renju[search_i][search_j] == BLACK) 
             continue; //边上有黑棋 会因长连禁手无法构成活三
 
         search_i = now_i;
         search_j = now_j;
-        for (index1 = 0; index1 < 6 && in_range(search_i, search_j); index1++, search_i += dx, search_j += dy) {
-            if (fir[search_i][search_j] == WHITE) break;
-            else value += fir[search_i][search_j] * base[index1];
+        for (index1 = 0; index1 < 6 && in_range(search_i, search_j); \
+        index1++, search_i += dx, search_j += dy) {
+            if (renju[search_i][search_j] == WHITE) break;
+            else value += renju[search_i][search_j] * base[index1];
         } 
 
         end_i = now_i + index1*dx;
         end_j = now_j + index1*dy;
 
         if(index1 < 6) continue;
-        else if(!in_range(end_i, end_j) || fir[end_i][end_j] != BLACK) {
+        else if(!in_range(end_i, end_j) || renju[end_i][end_j] != BLACK) {
             switch (value) {
                 case huo_three1:
                     key_i = now_i + dx*1;  

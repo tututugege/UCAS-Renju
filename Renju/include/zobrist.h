@@ -6,6 +6,8 @@
 #define HASHSIZE 33554432 //置换表大小
 #define NULLKEY 33554432  
 
+#define ZOBRIST(key) ((key) & 33554431)
+
 typedef struct hash_item {
 	unsigned long long key;
 	int point;    //分数值
@@ -23,6 +25,6 @@ table* init_table(); //初始化置换表
 int TT_search(int depth); //查表
 void TT_insert(int point, int depth); //插入数据
 int zobrist_hash(unsigned long long key); //对当前key取index
-void free_all(); //释放哈希表内存
+void TT_free(); //释放哈希表内存
 
 #endif

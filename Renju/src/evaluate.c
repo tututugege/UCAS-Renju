@@ -1,7 +1,22 @@
 #include "../include/evaluate.h"
-int black_point[10] = {5, 10, 50, 100, 500, 1000, 10000, 100000, 1000000};
-int white_point[10] = {5, 10, 50, 100, 500, 1000, 10000, 100000, 1000000};
+
+//杀棋PCT PVF正在研发ing
+// extern Line killer_board[LENGTH];
+extern Line bit_set[LENGTH];
+int black_point[8] = {5, 10, 50, 100, 500, 1000, 1500, 10000};
+int white_point[8] = {5, 10, 50, 100, 500, 1000, 1500, 10000};
 int score_table[NUM_POINT] = {0};
+
+// void add_killer(int i, int j) {
+//     killer_board[j] |= ~bit_set[i];
+// }
+
+// int is_killer(int i, int j) {
+//     if (killer_board[j] & ~bit_set[i])
+//         return 1;
+//     else 
+//         return 0;
+// }
 
 //初始化评分表
 
@@ -11,13 +26,18 @@ int point_evaluate(int i, int j, int depth) {
 }
 
 int move_evaluate(int i, int j, int board_score, int depth) {
-    int score; 
+    int score, change_score; 
 
     set_point(i, j);
     if ((score = TT_search(depth - 1)) == NULLKEY) {
-        score = board_score + point_evaluate(i, j, depth);
+        change_score = point_evaluate(i, j, depth);
+        score = board_score + change_score;
         TT_insert(score, depth - 1);
-    }
+    } else 
+        change_score = score - board_score;
+
+    // if (change_score >= 5000) 
+    //     add_killer(i, j);
     return score;
 }
 
@@ -30,16 +50,16 @@ int init_point_evaluate(int i, int j, int dx, int dy) {
     search_j = j - 4*dy;
     while (search_i != i || search_j != j) { 
         if (in_range(search_i, search_j)) 
-            index1 += fir[search_i][search_j] * base[num];
+            index1 += renju[search_i][search_j] * base[num];
         search_i += dx;
         search_j += dy;
         num++;
     } 
     
-    index2 = fir[i][j] * base[num++];
+    index2 = renju[i][j] * base[num++];
     for (i += dx, j += dy; num < 9; i += dx, j += dy, num++) {
         if (in_range(i ,j))
-            index1 += fir[i][j] * base[num];
+            index1 += renju[i][j] * base[num];
     }
 
     index2 += index1;
@@ -119,18 +139,18 @@ int init_evaluate(int* board) {
                 case four_1b:
                 case four_2b:
                 case four_3b:
-                    black_evaluate[5]++;
+                    black_evaluate[6]++;
                     break;
                 case four_1w:
                 case four_2w:
                 case four_3w:
-                    white_evaluate[5]++;
+                    white_evaluate[6]++;
                     break;
                 case five_b:
-                    black_evaluate[6]++;
+                    black_evaluate[7]++;
                     break;
                 case five_w:
-                    white_evaluate[6]++;
+                    white_evaluate[7]++;
                     break;
             }
         }

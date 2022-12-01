@@ -1,6 +1,7 @@
 #include "../include/bit_board.h"
-#include "../include/history.h"
 
+void sort(Tree move_set, int num);
+void clear_killer();
 unsigned long long move_table[MOVE_NUM];
 Line bit_move_set[LENGTH] = {
 	0b0111000000000000,
@@ -41,6 +42,7 @@ Line bit_set[LENGTH] = {
 Line bit_board[LENGTH];
 Line bit_move_board[LENGTH] = {0};
 Line g_last_buf[5] = {0};
+Line killer_board[LENGTH] = {0};
 
 //位棋盘bit_board由15个short(2字节16位)组成 0表示该位有棋子
 //走法位棋盘bit_move_board中 1表示为当前有价值的走法(两步内有其他棋子)
@@ -79,6 +81,7 @@ void init_move_table() {
 
 //获取走法
 Tree get_move(int position, int j, Line* last_buf, Tree last_move) {           
+    clear_killer();
     time_b = clock();
     Tree move_set, p, q;
     int index;
@@ -90,21 +93,25 @@ Tree get_move(int position, int j, Line* last_buf, Tree last_move) {
 
     //获得新走法后直接加上上一步的走法
     //需要去除上一步下的位置
-    for (p = move_set + index, q = last_move; q->position != position; p++, q++, index++) {
+    for (p = move_set + index, q = last_move; q->position != position && q->position != NULLPOSITION; p++, q++, index++) {
         p->position = q->position;
-        p->history_score = get_history(position);
+        p->history_score = GET_HIS(position);
         //查历史表
     }
-    q++;
-    for (; q->position != NULLPOSITION; p++, q++, index++){
-        p->position = q->position;
-        p->history_score = get_history(position);
-        //查历史表
+    if (q->position != NULLPOSITION) {
+        q++;
+        for (; q->position != NULLPOSITION; p++, q++, index++){
+            p->position = q->position;
+            p->history_score = GET_HIS(position);
+            //查历史表
+        }
     }
+
     p->position = NULLPOSITION;
+    p->history_score = 0;
     time_e = clock();
     generate_time += time_e - time_b;
-       
+    time_b = clock();
     quick_sort(move_set, 0, index - 1);
     time_e = clock();
     sort_time += time_e - time_b;
@@ -128,7 +135,7 @@ int get_new_move(Tree move_set, Line* last_buf, int j) {
         while (val) {
             i = val & 0b1111;
             move_set[index].position = position =  i*(LENGTH + 1) + start_j;
-            move_set[index].history_score = get_history(position);
+            move_set[index].history_score = GET_HIS(position);
             val = val >> 4;
             index++;
         }
@@ -196,4 +203,39 @@ void cache_move_board() {
     get_range(&start_j, &end_j, g_j);    
     for (i = 0; start_j != end_j; i++, start_j++)
         g_last_buf[i] = bit_move_board[start_j];
+}
+
+void sort(Tree move_set, int num) {
+    int i, j;
+    i = 0;
+    j = num;
+
+    // for (Tree p = move_set; p->position != NULLPOSITION; p++)
+    //     printf("%d ", p->history_score);
+    // printf("\n");
+
+    while (i < j) {
+        while (move_set[i].history_score != 0)
+            i++;
+        while (move_set[j].history_score == 0) 
+            j--;
+        if (i < num && j > 0)
+            exchange(move_set, i, j);
+    }
+    // for (Tree p = move_set; p->position != NULLPOSITION; p++)
+    //     printf("%d ", p->history_score);
+    // printf("\n");
+    // system("pause");
+    
+    quick_sort(move_set, 0, i--);
+    // for (Tree p = move_set; p->position != NULLPOSITION; p++)
+    //     printf("%d ", p->history_score);
+    // printf("\n");
+    // system("pause");
+
+}
+
+void clear_killer() {
+    for (int i = 0; i < LENGTH; i++)
+        killer_board[i] = 0;
 }
