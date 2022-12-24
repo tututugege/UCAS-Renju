@@ -1,9 +1,9 @@
 #ifndef _AI_H_
 #define _AI_H
 
-#include "../include/common.h"
-#include "../include/set.h"
-#include "../include/bit_board.h"
+#include "./common.h"
+#include "./set.h"
+#include "./bit_board.h"
 
 /* 宏定义 */
 #define MAXDEPTH 8          //普通搜索深度

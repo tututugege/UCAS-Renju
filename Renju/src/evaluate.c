@@ -1,4 +1,4 @@
-#include "../include/evaluate.h"
+#include "./evaluate.h"
 #include <math.h>
 
 /*ÆÀ·ÖË¼Â·£º

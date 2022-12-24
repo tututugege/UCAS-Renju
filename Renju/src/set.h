@@ -5,8 +5,8 @@
  *主管下棋、棋盘显示、报点等基础性界面
  */
 
-#include "../include/common.h"
-#include "../include/bit_board.h"
+#include "./common.h"
+#include "./bit_board.h"
 #include "./evaluate.h"
 
 #define LASTBLACK 3         //刚下的黑棋

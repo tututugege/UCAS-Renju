@@ -1,6 +1,6 @@
-#include "../include/set.h"
+#include "./set.h"
 
-int renju[LENGTH][LENGTH] = {0};
+int renju[LENGTH][LENGTH] = {0}; //棋盘数组
 
 /*逐行打印棋盘*/
 void set_board() { 

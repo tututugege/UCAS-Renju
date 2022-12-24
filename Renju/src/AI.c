@@ -1,4 +1,4 @@
-#include "../include/AI.h"
+#include "./AI.h"
 
 int node_num = 0;               //搜索节点数目
 int now_score[2] = {4, 0};      //当前黑棋0白棋1的得分

@@ -3,7 +3,7 @@
 /*
  *禁手判断，核心思想是三进制哈希匹配，将一种棋形映射为一个三进制数作为索引
  */
-#include "../include/common.h"
+#include "./common.h"
 
 /* 棋形模板 */
 #define huo_three1  117  //011100

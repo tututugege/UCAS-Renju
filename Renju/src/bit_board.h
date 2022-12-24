@@ -5,9 +5,9 @@
  *位棋盘部分,主要用来生成走法并排序
  */
 
-#include "../include/common.h"
-#include "../include/set.h"
-#include "../include/evaluate.h"
+#include "./common.h"
+#include "./set.h"
+#include "./evaluate.h"
 
 /* 宏定义 */
 #define MOVE_NUM 32768          //2^15,表示一行15个子下棋位点的所有情况

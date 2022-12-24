@@ -1,4 +1,4 @@
-#include "../include/forbid.h"
+#include "./forbid.h"
 
 /*按照Renju禁手规则
  *活三关键位置为两边不能为黑棋,否则长连  并且

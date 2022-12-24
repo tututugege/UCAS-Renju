@@ -1,4 +1,4 @@
-#include "../include/bit_board.h"
+#include "./bit_board.h"
 
 /*
  *位棋盘bit_board由15个short(2字节16位)组成 0表示该位有棋子

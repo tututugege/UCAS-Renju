@@ -5,9 +5,9 @@
  *三种游戏模式框架
  */
 
-#include "../include/common.h"
-#include "../include/bit_board.h"
-#include "../include/set.h"
+#include "./common.h"
+#include "./bit_board.h"
+#include "./set.h"
 
 /* 函数声明 */
 void PvsP();        //人机对战

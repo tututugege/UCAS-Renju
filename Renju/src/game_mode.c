@@ -1,4 +1,4 @@
-#include "../include/game_mode.h"
+#include "./game_mode.h"
  
 /* 三种游戏模式入口 */
  

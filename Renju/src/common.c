@@ -1,4 +1,4 @@
-#include "../include/common.h"
+#include "./common.h"
 
 /*判断i是否在0-14闭区间内*/
 int within_range(int i) {

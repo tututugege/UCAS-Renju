@@ -4,7 +4,8 @@
  *棋盘评估，核心思想是三进制哈希匹配，将一种棋形映射为一个三进制数作为索引
  *穷举所有能成五的六位三进制棋形(实在太多)
  */
-#include "../include/common.h"
+#include <math.h>
+#include "./common.h"
 
 /* 棋形模板 */
 #define one_1w 486 //200000
