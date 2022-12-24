@@ -1,12 +1,11 @@
 #include "../include/forbid.h"
-//禁手函数实现
-//禁手写的比较早 因此经验不足比较丑陋 有待优化
 
-//活三关键位置为两边不能为黑棋,否则长连  并且
-//活四关键位置为中间不能是禁手(长连)
-int base[9] = {1, 3, 9, 27, 81, 243, 729, 2187, 6561}; // 将空位(0) 黑棋(1) 白棋(2) 视作三进制的012
+/*按照Renju禁手规则
+ *活三关键位置为两边不能为黑棋,否则长连  并且
+ *活四关键位置为中间不能是禁手(长连)
+ *哈希匹配：将棋盘映射到三进制数组，规定长度一定时可以直接一一对应*/
 
-                                                       // 棋形长度固定时 一个数字唯一确定一种棋形
+const int base[15] = {1, 3, 9, 27, 81, 243, 729, 2187, 6561, 19683, 59049, 177147, 531441, 1594323, 4782969}; 
 int forbid(int i, int j) {
 
     renju[i][j] = BLACK;
@@ -27,21 +26,20 @@ int forbid(int i, int j) {
     if (max_length < line4)
         max_length = line4;
 
+    /*先判断最简单的长连情况*/
     if (max_length > 5) {
         renju[i][j] = 0;
         if (line1 == 5 && line2 == 5 && line3 == 5 && line4 == 5) 
-            return 0; //最简单的长连情况
+            return 0; 
         else 
             return 1; 
     }
 
+    /*四个方向判断活四*/
     if (isHuoFour(i, j, 1, 0)) num_four++;
     if (isHuoFour(i, j, 0, 1)) num_four++;
     if (isHuoFour(i, j, 1, 1)) num_four++;
     if (isHuoFour(i, j, 1, -1)) num_four++;
-
-    //判断活四
-
 
     num_four += isChongFour(i, j, 1, 0) + isChongFour(i, j, 0, 1) + isChongFour(i, j, 1, 1) + isChongFour(i, j, 1, -1); 
     num_three += isHuoThree(i, j, 1, 0) + isHuoThree(i, j, 0, 1) + isHuoThree(i, j, 1, 1) + isHuoThree(i, j, 1, -1); 
@@ -127,7 +125,7 @@ int isChongFour(int i, int j, int dx, int dy) {
 
 int isHuoThree(int i, int j, int dx, int dy) {
     int value, key_i, key_j, now_i, now_j, end_i, end_j, search_i, search_j;
-    int index1; //加权算术的标号
+    int index1;     //加权算术的标号
     int index2 = 0; //需要计算情况的标号
 
     for (now_i = i - dx, now_j = j - dy; index2 < 4 && in_range(now_i, now_j); \
@@ -155,22 +153,26 @@ int isHuoThree(int i, int j, int dx, int dy) {
                 case huo_three1:
                     key_i = now_i + dx*1;  
                     key_j = now_j + dy*1;  
-                    if (!forbid(key_i, key_j)) return 1;  //三三禁手没有同一条线上的情况 发现即可返回1
+                    if (!forbid(key_i, key_j)) 
+                        return 1;  //三三禁手没有同一条线上的情况 发现即可返回1
                     break;
                 case huo_three2:
                     key_i = now_i + dx*4;  
                     key_j = now_j + dy*4;  
-                    if (!forbid(key_i, key_j)) return 1;
+                    if (!forbid(key_i, key_j)) 
+                        return 1;
                     break;
                 case huo_three3:
                     key_i = now_i + dx*2;  
                     key_j = now_j + dy*2;  
-                    if (!forbid(key_i, key_j)) return 1;
+                    if (!forbid(key_i, key_j)) 
+                        return 1;
                     break;
                 case huo_three4:
                     key_i = now_i + dx*3;  
                     key_j = now_j + dy*3;  
-                    if (!forbid(key_i, key_j)) return 1; 
+                    if (!forbid(key_i, key_j)) 
+                        return 1; 
                     break;
             }
         } 

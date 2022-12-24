@@ -1,2 +1,60 @@
-# MyRenju
-äº”å­æ£‹ä½œä¸š
+# Ç°ÑÔ
+
+ÕâÑ§ÆÚµÄÎå×ÓÆå¶ÔÎÒÀ´ËµÕæÊÇÒâÒå·Ç·²£¬ËûÇý¶¯ÎÒ´ÓÒ»¸öÖ»ÊÇ¶ÔcÓïÑÔÂÔÖªÒ»¶þµÄ¼¸ºõ´¿Ð¡°×Ñ§»áÁËºÜ¶à¶«Î÷£¬ÉÏÍø²é×ÊÁÏ£¬·­ÔÄ¸÷ÖÖ²©¿Í£¬ÌáÇ°Ô¤Ï°Ò»Ð©Êý¾Ý½á¹¹£¬Ò»¸öÑ§ÆÚÒ»´ó°ë¿ÕÏÐÊ±¼ä¶¼»¨ÔÚÁËÐ´Îå×ÓÆå£¬´Ó×î³õµÄÍêÈ«ÎÞ´ÓÏÂÊÖ,µ½ÄÜ¹»×Ô¼º´´ÐÂ³öÒ»Ð©ÓÅ»¯µÄ¶«Î÷¡£
+
+ÒÀÏ¡¼ÇµÃÎÒµÄÎå×ÓÆåµÚÒ»´Î¶¯ÆðÀ´»á¶ÂÈËÄÇ¸öÍíÉÏ£¬ÄÚÐÄ¼¤¶¯ÎÞ±È£¬¸Ð¾õÎÒ¾ÍÊÇ¡°cÓïÑÔ´óÀÐ¡±QAQ£¬²»¹ýºóÀ´·¢ÏÖÆäÊµ¶¼ÊÇbug£¬»á¶ÂÈË´¿ÊôÒâÍâ¡£
+
+ÎÒµÚÒ»¸öÔÂ¾ÍÐ´³öÁËÄÜºÍÎÒÕâ¸öÎå×ÓÆåÐ¡°×¶Ô´òµÄ°æ±¾£¬µ«ºóÐøµÄ¸Ä½øÏÝÈëÁËÆ¿¾±£¬´ó²¿·ÖÊ±¼ä»¨ÔÚÁË¸Ä½øÊ±¼äÐÔÄÜ£¬Ã»ÓÐÓÅ»¯Ëã·¨£¬×îºóÉõÖÁÃ»Ê±¼äÑÐ¾¿Ò»ÏÂVCTºÍVCF£¬ÆåÁ¦ºÜÒ»°ã£¬ºÍ¼¸¸öÍøÉÏÕÒµ½µÄ¼¸¸öAIÏÂ¶¼ÊÇÍê°Ü£¬Îª´Ë»¹ÊÇÓÐÐ©ÒÅº¶¡£
+
+²Î¿¼×ÊÁÏ£º
++ ÏóÆå°Ù¿ÆÈ«Êé£º<https://www.xqbase.com/>
++ gobang£º<https://github.com/lihongxun945/gobang>
++ ÇåÔÂÁ¬Öé£º<https://www.cnblogs.com/zcsor/p/3383090.html>
++ ¡¶PCÓÎÏ·±à³Ì(ÈË»ú²©ÞÄ)¡· ÍõÐ¡´º
+
+# ÊµÏÖµÄ¶«Î÷
+
+±¾AI²ÉÓÃPVS¸Ä½øµÄalphabeta¼ôÖ¦Ëã·¨ÎªÖ÷¸É£¬Í¨¹ýÔ¤ÏÈÆÀ¹ÀÔçÆÚ²Ã¼ôÑ¡³öÃ¿²½20¸ö×ß·¨ÊµÏÖ8²ãËÑË÷£¬Ä¿Ç°ËãÉ±ÓÐÓÐ´ýÓÅ»¯¡£
+
++ Î»ÆåÅÌÉú³É×ß·¨
++ µ¥ÐÐÆÀ·Ö»º´æ
++ ÔçÆÚ²Ã¼ô
++ ¹þÏ£Æ¥ÅäÅÐ¶Ï½ûÊÖ
+
+# Î´ÊµÏÖµÄ¶«Î÷
+
+µ±³õÁ¢ÏÂ×³Ö¾£¬½á¹û×îºóÒ»¸öÐÇÆÚ³ÉÁËÐ¡ÑôÈË£¬¼ÓÉÏ×îºóÒ²ÓÐµãÀÁ¶è£¬Ò»Ð©ÒÑ¾­ÓÐÁËË¼Â·µÄ¶«Î÷×îÖÕÃ»ÓÐÊµÏÖ¡£
+
+## **³åÆåµã¹þÏ£±í**
+
+ÔÚÎÒµÄevaluateÖÐÔ¤ÏÈ»º´æÁËÒ»ÐÐ×î¶à15¸öÆå×ÓËùÓÐÇé¿ö¶ÔÓ¦µÄÆÀ·Ö£¬Òò´Ë´ó´óËõ¶ÌÁËÆÀ¹ÀÊ±¼ä¡£ÊÂÊµÉÏÎÒÃÇ²»½ö¿ÉÒÔ»º´æÆÀ·Ö£¬»¹¿ÉÒÔ»º´æ¶ÔÓ¦ÆåÅÌµÄ³åÆåÐÅÏ¢£¬¼´Ò»ÐÐÄÄÐ©µã¿ÉÒÔ³åÆå£¬ÊÇ»îÈý»¹ÊÇ³åËÄ£¬Èç´ËÒ»À´ÔÚ»ñÈ¡×ß·¨µÄÊ±ºòÒ²»áÏàµ±Ñ¸ËÙ£¬ÌØ±ðÊÇÔÚÒÑ¾­ÓÐ»îÈý³åËÄµÄÇé¿öÏÂ£¬ÎÒÃÇºÜ¶àÊ±ºòÖ»ÐèÒªËÑË÷»îÈý³åËÄµã½øÐÐ·ÀÊØ»ò·´»÷£¬ÔÚÎå×ÓÆåÖÐºó½×¶Î´ó¶à¶¼ÊÇÕâÖÖÇé¿ö£¬ÀýÈç¶Ô·½»îÈý£¬ÎÒÃÇÄÜ×ßµÄµãÖ»ÓÐ·â¶ÂºÍËÄ¸öÒÔÉÏµÄÁ¬×Ó£¬¶Ô·½Á¬ËÄÁËÎÒÃÇÖ»ÄÜ·â¶Â»òÕß³ÉÎå£¬¸ü¾«È·¸üÉÙµÄ×ß·¨Í¬Ê±Ò²ÒâÎ¶×Å¸üÉîµÄÉî¶È¡£±¾³ÌÐò×îºóÖ»ÄÜÍ¨¹ý·ÖÊýÖµÀ´Çø·ÖÆÕÍ¨×ß·¨ºÍ»îÈý³åËÄ×ß·¨£¬¾¡¹ÜÒ²ÄÜÓÃ£¬µ«ÊÇ²»¾«È·£¬Ò²ÀË·ÑÁËËÑË÷£¬±ÈÈçÔÚ¶Ô·½ÒÑ¾­»îÈýÊ±£¬ÔÙÈ¥×ß»îÈý¾ÍµÈÓÚËÍËÀ¡£
+
+ÕâÑù»º´æ´ó¸ÅÐèÒªËÄÇ§Íò¸ö½Úµã£¬³ä·ÖÀûÓÃºÃÒ»¸ö×Ö½ÚµÄÃ¿Ò»Î»ÆäÊµÒ²¾ÍÏûºÄ¼¸Ê®µ½Ò»°Ù¶àmb£¬»¹ÊÇºÜ¹»ÓÃµÄ¡£
+
+## **¿ª¾Ö¿â**
+
+ÒÑ¾­Ö¤Ã÷¼´Ê¹ÓÐ½ûÊÖ£¬ºÚÆåÒ²ÊÇ±ØÊ¤µÄ¡£ÍêÈ«¿ÉÒÔÍ¨¹ý¿ª¾Ö¿â°Ñ¿ª¾ÖÒýÏòÒ»¸ö¿¿ÎÒµÄAIÄÜ¹»ÕÒµ½VCT VCF½âµÄ¾ÖÃæÀ´´ïµ½°Ù·Ö°ÙÊ¤ÂÊ£¬ÎÒÔÚÍøÉÏÒ²ÕÒµ½ÁËÒ»Ð©¿ª¾ÖµÄ±ØÊ¤Æ×£¬µ«ÊÇÎÒ²»ÖªµÀÔõÃ´½âÎöÕâÐ©libÎÄ¼þ£¬Ã²ËÆÊÇÊ²Ã´¾²Ì¬¿â£¬ËäÈ»Í¨¹ýRenlibÈí¼þ´ò¿ª¿ÉÒÔ¿´Æ×£¬µ«ÊÇ×Ü²»ÄÜ´¿¿¿ÊÖ´òÂ¼ÈëÕâÐ©ÐÅÏ¢°É£¬×îºó»¹ÊÇ·ÅÆúÁË¡£
+
+## **ÍþÐ²¿Õ¼äËÑË÷**
+
+×î³õÔÚ<https://www.cnblogs.com/zcsor>ÕâÎ»²©Ö÷µÄÒ»ÆªÎÄÕÂÁË½âµ½Õâ¸ö¶«Î÷£¬Ô­ÎÄÓ¦¸ÃÊÇGo-Moku and Threat-Space Search£¬×÷Õß£ºLV Allis£¬H.J. Van Den Herik£¬MPH Huntjens£¬²»¹ý¹úÄÚÄ³Ê®¶àÄêÇ°µÄÎå×ÓÆåÂÛÎÄÀïÃæÓÐÀ×Í¬µÄÖÐÎÄ°æ£¬´ó¸ÅÒ²¾ÍÊÇ²ûÊöÁËVCTºÍVCFµÄÀíÂÛ»¯£¬¸ø³öÁËÒ»¸öÕÒÖÂÊ¤ÍþÐ²µÄ¾ßÌå·½·¨¡£È»¶ø¾ßÌå¹ý³Ì»¹ÊÇÂÔÏÔ¸´ÔÓ£¬×îºóËãÉ±»¹ÊÇÖ»ÊÇËÑË÷·ÖÊý×ã¹»´óµÄµãÏÂÆå¡£
+
+# Ò»Ð©±»ÆúÓÃµÄ¶«Î÷
+
+
+
+## **¿Õ×Å²Ã¼ô**
+
+²Î¿¼<https://www.xqbase.com/computer/advanced_nullmove.htm>£¬ÆäÊµ¾ÍÊÇÒ»²½²»ÏÂÆå£¬È»ºó¸ø¶Ô·½ÏÂ£¬×îºó·µ»ØÖµÈÔÈ»ºÃµ½³¬¹ýÎÒÃÇÉèÖÃµÄbetaÖµ£¬ËµÃ÷Õý³£ÏÂÄÇ¿Ï¶¨Ò²»á³¬¹ýbeta£¬ÄÇ¾ÍÖ±½Ó·µ»Øbeta¡£Ä³¸ö°æ±¾ÎÒÊµÏÖÁËÒ»µã¼òµ¥µÄ¿Õ×Å²Ã¼ô£¬µ«ÊÇ×Ü¸Ð¾õ¹Ö¹ÖµÄ£¬²¢ÇÒ³öÏÖÁËÒ»Ð©bug£¬×îºó·ÅÆúÁË¡£
+
+## **zobristÖÃ»»±í**
+
+ÒòÎª¸Õ¿ªÊ¼Ã»ÓÐ½Ó´¥¹þÏ£±íÕâÖÖ¶«Î÷£¬Ò»Ö±Ïë²»Í¨ÔõÃ´²ÅÄÜÊµÏÖÕâ¸öÖÃ»»±í£¬Îª´ËÄÇÒ»ÖÜµÄÈÕË¼Ò¹Ïë£¬²éÁËºÃ¶à×ÊÁÏÖÕÓÚÊµÏÖÒÔºóÈ´·¢ÏÖÐ§¹û·Ç³£Ò»°ã£¬Õ¼ÁËºÃ¼¸°ÙÕ×Ò²¾Í¿ìÁË20%×óÓÒ£¬ºóÀ´ÒòÎªÎÒµÄÆÀ·Ö·½Ê½¸ÄÎªÃ¿ÏÂÒ»²½Ë¢ÐÂ£¬ÄÇÕâ¸ö´æ´¢Õû¸ö¾ÖÃæ·ÖµÄÖÃ»»±í¸Ð¾õ¾Í²»Ì«ÓÐÓÃÁË£¬µ«ÊÇÕâÖÖ¹þÏ£±í»º´æµÄË¼ÏëÌØ±ðÓÐÓÃ¡£
+
+## **ÀúÊ·±íÅÅÐò**
+
+alpha-betaËÑË÷ÀïË³ÐòÌØ±ðÖØÒª£¬Òò´Ë¿ÉÒÔÍ¨¹ýµü´ú¼ÓÉî»ñÈ¡Ç³²ã½ÚµãµÄÀúÊ·ÆÀ·Ö¶Ô½Úµã½øÐÐÅÅÐò£¬ÎªÃ¿²ãËÑË÷µÄ×îºÃ½ÚµãºÍbeta½Ø¶Ï½ÚµãÉèÖÃÒ»¸öÀúÊ··Ö£¬¸ù¾ÝÀúÊ··ÖÅÅÐòÏÔÖøÌá¸ßËÙ¶È£¬ÊµÏÖ¼òµ¥Ð§¹ûÁ¢¸Í¼ûÓ°¡£²»¹ýÎªÁËÔçÆÚ¼ôÖ¦£¬Í¬Ê±ÓÐÁËÆÀ·Ö¹þÏ£±í£¬¾Í·ÅÆúÁËÕâÖÖÅÅÐò£¬Ö±½ÓÍ¨¹ýÆÀ·ÖÅÅÐò¡£
+
+## **MTD(f)ËÑË÷Ëã·¨**
+
+mtd(f)ºÍpvs¶¼ÊÇalphabeta¼ôÖ¦µÄÓÅ»¯Ëã·¨£¬Ö»ÐèÒª¼Ó¼¸ÐÐ¾Í¿ÉÒÔ´øÀ´Ò»¶¨µÄËÙ¶ÈÓÅ»¯£¬²»¹ýmtd(f)ÒªÂÔ¸´ÔÓÒ»µã£¬²¢ÇÒ·Ç³£ÒÀÀµÓÚÃ¿´ÎËÑË÷µÄÆÀ·ÖÆÚÍûÖµ£¬¾ÝËµMTD(f)ÊÇÓÅÓÚPVS£¬µ«ÊÇ±¾ÈËÊµ²âmtd(f)·Ç³£²»ÎÈ¶¨£¬¾ÝËµmtd(f)ÔÚ²¢ÐÐ¼ÆËãÉÏÓÐÓÅÊÆ£¬ÄÎºÎ±¾ÈËË®Æ½Ì«´Î£¬ÍêÈ«¿´²»¶®cÓïÑÔ²¢ÐÐ¼ÆËãµÄ²¿·Ö£¬»¹Ã»ÓÐÏß³ÌÖ®ÀàµÄ¸ÅÄî¡£

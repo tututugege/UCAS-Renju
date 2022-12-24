@@ -2,16 +2,13 @@
 
 int renju[LENGTH][LENGTH] = {0};
 
-//棋盘基本操作
-//打印棋盘 下棋 判断输赢
-
 /*逐行打印棋盘*/
 void set_board() { 
     int i, j;
-    //自上而下打印，因此i从LENGTH-1开始递减
-    //每行第一个符号分三种边框情况和四种棋子情况特殊处理
+    /*自上而下打印，因此i从LENGTH-1开始递减
+     *每行第一个符号分三种边框情况和四种棋子情况特殊处理*/
     for (i = LENGTH - 1; i >= 0; i--) {    
-        printf("%2d", i + 1);               //打印行标
+        printf("%2d", i + 1); //打印行标
         if (renju[i][0] == EMPTY) {
             if (i == LENGTH - 1) 
                 printf("┏");
@@ -21,8 +18,8 @@ void set_board() {
                 printf("┣");
         } else 
             print_piece(i, 0);
-       //每行第二个符号到倒数第二个符号可以批量处理
-        //同样分为三种边框情况和四种棋子情况
+        /*每行第二个符号到倒数第二个符号可以批量处理
+         *同样分为三种边框情况和四种棋子情况*/
         for (j = 1; j < LENGTH - 1; j++){   
             if (renju[i][j] == EMPTY) {
                 if (i == LENGTH - 1) 
@@ -44,7 +41,6 @@ void set_board() {
                 printf("┫");
         } else 
             print_piece(i, LENGTH - 1);
-            //每排最后一个
         printf("\n");
     }
     printf("   ");
@@ -53,7 +49,7 @@ void set_board() {
     printf("\n\n");
 }
 
-//根据情况打印棋子
+/* 根据情况打印棋子 */
 void print_piece(int i, int j) {
     switch (renju[i][j]) {
     case BLACK:
@@ -73,17 +69,31 @@ void print_piece(int i, int j) {
     }
 }
 
-//人机对战时人的部分
+/* 人机对战时人的部分,根据玩家下棋动态刷新有用的参数 */
 void player_set() {
-    Line buf[5];
+    Node pt;
+    int index, num, line;
     player_op();
     get_input();
-    buf_bit_move(g_j, buf);
-    g_score = move_evaluate(g_i, g_j, g_score, 0);
-    printf("当前局面得分%d\n", g_score);
-    reset_point(g_i, g_j);
-    re_bit_move(g_j ,buf);
     new_set(g_i, g_j);
+    pt.i = g_i;
+    pt.j = g_j;
+    pt.left = LEFT_I(g_i, g_j);
+    pt.right = RIGHT_I(g_i, g_j);
+    get_point_score(&pt);
+    for (index = 0; index < 4; index++) {
+        if((num = get_line_num(g_i, g_j, index)) < 5) 
+            continue;
+        line = transX[index](g_i, g_j);
+        now_score[0] -= score_table[0][num][board_shape[index][line]];
+        now_score[0] += score_table[0][num][pt.shape[index]];
+        now_score[1] -= score_table[1][num][board_shape[index][line]];
+        now_score[1] += score_table[1][num][pt.shape[index]];
+    }
+    board_shape[0][pt.j] = pt.shape[0]; 
+    board_shape[1][pt.i] = pt.shape[1]; 
+    board_shape[2][pt.left] = pt.shape[2]; 
+    board_shape[3][pt.right] = pt.shape[3]; 
 }
 
 void AI_set() {
@@ -91,11 +101,13 @@ void AI_set() {
     new_set(g_i, g_j);
 }
 
+/* 人人对战简单读取输入判断禁手就好 */
 void set() {
     get_input();
     renju[g_i][g_j] = player + 2;
 }
 
+/* 返回对应方向上的最长连子 */
 int lineLength(int i, int j, int dx, int dy) {
     int k, l;
     int num = 1;
@@ -104,11 +116,9 @@ int lineLength(int i, int j, int dx, int dy) {
     for (k = i - dx, l = j - dy; in_range(k, l) && renju[k][l] == last_player; k -= dx, l -= dy, num++);    
 
     return num;
-} //最长列棋子数目
+} 
 
-//根据下棋位置判断是否已经结束
-
-
+/* 获得输入 */
 void get_input() {
     int correct_input = 0;
     char temp_j;
@@ -134,13 +144,15 @@ void get_input() {
     } while (correct_input != 1);
 }
 
+/* 新下一步棋后需要对bit棋盘进行相关操作 */
 void new_set(int i, int j) {
     renju[i][j] = player + 2;
-    now_key ^= zobrist[i][j][player - 1];
-    cache_move_board();
+    bit_board[j] &= bit_set[i];
+    buf_move_board(g_move_buf);
     set_bit_board(i, j);
 }
 
+/* 三种情况 */
 void judge_result(int result) {
 	if (result == BLACK) 
 		printf("黑棋赢\n");

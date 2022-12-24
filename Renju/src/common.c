@@ -1,6 +1,6 @@
 #include "../include/common.h"
 
-//判断i是否在0-14闭区间内
+/*判断i是否在0-14闭区间内*/
 int within_range(int i) {
     if (i >= 0 && i < LENGTH) 
         return 1;
@@ -8,6 +8,7 @@ int within_range(int i) {
         return 0; 
 }
 
+/*判断i, j是否在0-14闭区间内*/
 int in_range(int i, int j) {
     if (within_range(i) && within_range (j))
         return 1;
@@ -15,6 +16,7 @@ int in_range(int i, int j) {
         return 0;
 }
 
+/* 判断棋盘是否满 */
 int is_full() {
     int i, j;
 
@@ -27,4 +29,3 @@ int is_full() {
     }
     return 1;
 }
-
