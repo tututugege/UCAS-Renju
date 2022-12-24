@@ -31,4 +31,5 @@ int forbid(int i ,int j);                       //判断禁手
 /* 全局变量 */
 extern int now_score[];   //当前局面评分
 extern Line g_move_buf[]; //缓存走法数组
+extern char game_mode;         //游戏模式
 #endif

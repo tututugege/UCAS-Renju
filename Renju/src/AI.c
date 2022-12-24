@@ -177,7 +177,7 @@ void AI_op() {
     g_j = PV_p->j;
     system("cls");
     printf("当前局面分 黑：%d 白：%d\n", now_score[0], now_score[1]);
-    printf("总用时%.2f\n", (end_t - start_t)/1000.0);
+    printf("总用时%.2fs\n", (end_t - start_t)/1000.0);
     printf("生成走法时间%d\n", generate_time);
     printf("排序时间%d\n", sort_time);
     printf("节点数目%d\n", node_num);

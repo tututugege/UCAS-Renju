@@ -7,6 +7,12 @@ void set_board() {
     int i, j;
     /*自上而下打印，因此i从LENGTH-1开始递减
      *每行第一个符号分三种边框情况和四种棋子情况特殊处理*/
+    if (game_mode == 0)
+		printf("     五子棋有禁手人人对战\n");
+	else if (game_mode == 1)
+		printf("     五子棋有禁手人机对战\n");
+	else
+		printf("     五子棋有禁手机机对战\n");
     for (i = LENGTH - 1; i >= 0; i--) {    
         printf("%2d", i + 1); //打印行标
         if (renju[i][0] == EMPTY) {

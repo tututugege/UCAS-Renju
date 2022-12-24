@@ -9,9 +9,9 @@
 ********************************************************************************/
 #include "./main.h"
 
+char game_mode; //游戏模式
 int main() {
 	system("color F0"); //设置颜色为白底黑线,美观好看
-	char game_mode;
 	printf("请输入游戏模式：人人对战(0) 人机对战(1) 机机对战(2)：");
 	game_mode = getchar();
 	while ( !isdigit(game_mode) || (game_mode -= '0') > 2) {

@@ -46,6 +46,7 @@ void PvsAI() {
 			;	
 		player_color = getchar();
 	}
+	system("cls");
 
     /*选白棋就在天元先下*/
     if (player_color == WHITE) {
@@ -62,6 +63,7 @@ void PvsAI() {
 
 	while (!(result = win(g_i, g_j)) && !is_full()) {
 		if (player == player_color) {
+            printf("输入格式为(h8)或(H8)\n");
 			player_set();
             system("cls");
         }
