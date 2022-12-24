@@ -15,7 +15,7 @@ void PvsP() {
     system("cls");
     set_board();
     while (!(result = win(g_i, g_j)) && !is_full()) {
-        printf("输入格式(h8)或(H8)\n");
+        printf("输入格式为(h8)或(H8)\n");
         set();
         system("cls");
         set_board();
@@ -31,6 +31,7 @@ void PvsAI() {
     char player_color;
 
     /*初始化AI相关的哈希表之类的东西*/
+    printf("加载ing\n"); 
 	init_hash();        //评分表
 	init_bit_board();   //位棋盘
 	init_move_table();  //走法表
@@ -85,6 +86,7 @@ void AIvsAI() {
 
     step = time_b = time_w = 0;
 
+	printf("加载ing\n"); 
     init_hash();
 	init_bit_board();   //位棋盘
 	init_move_table();  //走法表

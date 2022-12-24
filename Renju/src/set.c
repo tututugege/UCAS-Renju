@@ -111,7 +111,10 @@ void set() {
 int lineLength(int i, int j, int dx, int dy) {
     int k, l;
     int num = 1;
-    int last_player = player % 2 + 1;
+    int last_player = renju[i][j];
+
+    if (!last_player)
+        return 0;
     for (k = i + dx, l = j + dy; in_range(k, l) && renju[k][l] == last_player; k += dx, l += dy, num++);    
     for (k = i - dx, l = j - dy; in_range(k, l) && renju[k][l] == last_player; k -= dx, l -= dy, num++);    
 
