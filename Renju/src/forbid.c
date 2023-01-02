@@ -29,7 +29,7 @@ int forbid(int i, int j) {
     /*先判断最简单的长连情况*/
     if (max_length > 5) {
         renju[i][j] = 0;
-        if (line1 == 5 && line2 == 5 && line3 == 5 && line4 == 5) 
+        if (line1 == 5 || line2 == 5 || line3 == 5 || line4 == 5) 
             return 0; 
         else 
             return 1; 
@@ -63,7 +63,7 @@ int isHuoFour(int i, int j, int dx, int dy) {
     for (now_i = i, now_j = j, num = 0; \
     renju[now_i][now_j] == BLACK && in_range(now_i, now_j); now_i += dx, now_j += dy, num++);    
 
-    if (now_i == LENGTH || now_j == -1 || now_j == LENGTH || renju[now_i][now_j] == WHITE) {
+    if (now_i == LENGTH || now_j == -1 || now_j == LENGTH) {
         l_edge = 0; //判断一边
     } else {
         l_i = now_i;
@@ -73,17 +73,20 @@ int isHuoFour(int i, int j, int dx, int dy) {
     for (now_i = i - dx, now_j = j - dy; \
     in_range(now_i, now_j) && renju[now_i][now_j] == BLACK; now_i -= dx, now_j -= dy, num++);    
 
-    if (now_i == -1 || now_j == -1 || now_j == LENGTH || renju[now_i][now_j] == WHITE) {
+    if (now_i == -1 || now_j == -1 || now_j == LENGTH) {
         r_edge = 0; 
     } else {
         r_i = now_i;
         r_j = now_j;
     }
 
-    if (num != 4 || (!l_edge && !r_edge)) return 0;
+    if (num != 4 || (!l_edge && !r_edge)) 
+        return 0;
 
-    if ((r_edge && !forbid(r_i, r_j)) || (l_edge && !forbid(l_i, l_j))) return 1;
-    else return 0;
+    if ((r_edge) || (l_edge)) 
+        return 1;
+    else 
+        return 0;
 }
 
 int isChongFour(int i, int j, int dx, int dy) {
@@ -108,15 +111,15 @@ int isChongFour(int i, int j, int dx, int dy) {
             if (value == chong_four_1) {
                 key_i = now_i + 2*dx;
                 key_j = now_j + 2*dy;
-                if (!forbid(key_i, key_j)) num++;   //四四禁手可能在一条线上 需要累加
+                num++;   //四四禁手可能在一条线上 需要累加
             } else if (value == chong_four_2) {
                 key_i = now_i + 3*dx;
                 key_j = now_j + 3*dy;
-                if (!forbid(key_i, key_j)) num++;
+                num++;
             } else if (value == chong_four_3) {
                 key_i = now_i + 1*dx;
                 key_j = now_j + 1*dy;
-                if (!forbid(key_i, key_j)) num++;
+                num++;
             }
         }
     }
@@ -140,8 +143,10 @@ int isHuoThree(int i, int j, int dx, int dy) {
         search_j = now_j;
         for (index1 = 0; index1 < 6 && in_range(search_i, search_j); \
         index1++, search_i += dx, search_j += dy) {
-            if (renju[search_i][search_j] == WHITE) break;
-            else value += renju[search_i][search_j] * base[index1];
+            if (renju[search_i][search_j] == WHITE) 
+                break;
+            else 
+                value += renju[search_i][search_j] * base[index1];
         } 
 
         end_i = now_i + index1*dx;

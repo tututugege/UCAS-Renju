@@ -24,8 +24,8 @@ int (*transY[4])(int i, int j) = {par_j, ver_j, left_j, right_j};
 /* 白棋黑棋评分权值
  * 最初的思想是将黑棋白棋相同棋形采用不同分
  * 不过最后还是成了相同的，这俩其实可以用一个数组 */
-const int black_point[8] = {1, 10, 100, 2000, 10000, 100000};
-const int white_point[8] = {1, 10, 100, 2000, 10000, 100000};
+const int black_point[8] = {1, 10, 100, 2200, 10000, 100000};
+const int white_point[8] = {1, 10, 100, 2200, 10000, 100000};
 
 /* 各长度评分表 */
 int score_table5_w[243] = {0};
@@ -116,29 +116,32 @@ void get_point_score(Tree p) {
         if ((num = get_line_num(i, j, index)) < 5)
             continue;
         oppo = board_shape[index][x] + (player ^ 0b11) * base[y];
-        score += (score_table[bool_player][num][p->shape[index]] - score_table[bool_player][num][board_shape[index][x]]);
+        // attack = score_table[bool_player][num][p->shape[index]] - score_table[bool_player][num][board_shape[index][x]];
+        // defend = score_table[b_player][num][p->shape[index]] - score_table[b_player][num][board_shape[index][x]];
+        // score += attack;
+        score += (int)(1.5*(score_table[bool_player][num][p->shape[index]] - score_table[bool_player][num][board_shape[index][x]]));
         score += (score_table[b_player][num][oppo] - score_table[b_player][num][board_shape[index][x]]);
     }
     p->point_score = score;
 }
 
-/*获得下棋后节点p四个方向的shape以及该走法的评价(己方收益+对方损失，配合算杀使用)*/
-// void get_point_score_kill(Tree p) {
+// void get_score_by_shape(Tree p) {
 //     int i = p->i;
 //     int j = p->j;
 //     int x, y, num;
-//     int score, index, oppo;
+//     int score, index, oppo, attack, defend;
 //     int b_player = bool_player ^ 1;
 
 //     score = 0;
 //     for (index = 0; index < 4; index++) {
 //         x = (transX[index])(i, j);
 //         y = (transY[index])(i, j);
-//         p->shape[index] = board_shape[index][x] + player * base[y];
 //         if ((num = get_line_num(i, j, index)) < 5)
 //             continue;
-//         score += (score_table[bool_player][num][p->shape[index]] - score_table[bool_player][num][board_shape[index][x]]);
-//         score -= (score_table[b_player][num][p->shape[index]] - score_table[b_player][num][board_shape[index][x]]);
+//         oppo = board_shape[index][x] + (player ^ 0b11) * base[y];
+//         attack = score_table[bool_player][num][p->shape[index]] - score_table[bool_player][num][board_shape[index][x]];
+//         score += (int)(1.5*(score_table[bool_player][num][p->shape[index]] - score_table[bool_player][num][board_shape[index][x]]));
+//         score += (score_table[b_player][num][oppo] - score_table[b_player][num][board_shape[index][x]]);
 //     }
 //     p->point_score = score;
 // }

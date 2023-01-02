@@ -7,6 +7,7 @@ int bool_player = 0;    //0为黑1为白
 Tree g_move = NULL;     //指向上一步走法，更新走法时用
 int g_i = 7;            
 int g_j = 7;            //这俩存当前这步要走的位置
+extern int maxdepth;
 
 /*人人对战*/
 void PvsP() {
@@ -58,8 +59,10 @@ void PvsAI() {
         set_board();
         print_pos();
         CHANGE_PLAYER;
-    } else 
+    } else { 
+        maxdepth = 3;
         set_board();
+    }
 
 	while (!(result = win(g_i, g_j)) && !is_full()) {
 		if (player == player_color) {
@@ -67,9 +70,13 @@ void PvsAI() {
 			player_set();
             system("cls");
         }
-		else 
+		else {
 			AI_set();
         // system("cls");
+            if (maxdepth == 3) {
+                maxdepth = 9;
+            }
+        }
         set_board();
         print_pos();
 		CHANGE_PLAYER;

@@ -11,6 +11,9 @@
  *位棋盘速度非常快，测试时生成一千万个节点所用时间在100ms左右
  */
 
+
+int quick_select(Tree move_set, int left, int right);
+
 unsigned long long move_table[MOVE_NUM]; //走法缓存表
 
 /* 每次下棋都将对应的模板在相应的5x5区域内作或操作*/
@@ -106,13 +109,13 @@ Tree get_move(int i, int j, int depth, Line* last_buf, Tree last_move) {
         p->j = q->j;
         p->left = q->left;
         p->right = q->right;
-        if (is_change(i, j, q))
+        // if (is_change(i, j, q))
             get_point_score(p);
-        else {
-            for (int index = 0; index < 4; index++)
-                p->shape[index] = q->shape[index];
-            p->point_score = q->point_score;
-        }
+        // else {
+        //     for (int index = 0; index < 4; index++)
+        //         p->shape[index] = q->shape[index];
+        //     p->point_score = q->point_score;
+        // }
     }
     if (q->j != NULLPOSITION) {
         q++;
@@ -121,13 +124,13 @@ Tree get_move(int i, int j, int depth, Line* last_buf, Tree last_move) {
             p->j = q->j;
             p->left = q->left;
             p->right = q->right;
-            if (is_change(i, j, q))
+            // if (is_change(i, j, q))
                 get_point_score(p);
-            else {
-                for (int index = 0; index < 4; index++)
-                    p->shape[index] = q->shape[index];
-                p->point_score = q->point_score;
-            }
+            // else {
+            //     for (int index = 0; index < 4; index++)
+            //         p->shape[index] = q->shape[index];
+            //     p->point_score = q->point_score;
+            // }
         }
     }
 
@@ -135,7 +138,10 @@ Tree get_move(int i, int j, int depth, Line* last_buf, Tree last_move) {
     time_e = clock();
     generate_time += time_e - time_b;
     time_b = clock();
-    quick_sort(move_set, 0, index - 1);
+    if (index > 15)
+        quick_sort(move_set, 0, quick_select(move_set, 0, index - 1));
+    else    
+        quick_sort(move_set, 0, index - 1);
     time_e = clock();
     sort_time += time_e - time_b;
 
@@ -263,8 +269,7 @@ int is_change(int i, int j, Tree p) {
 //         p->j = q->j;
 //         p->left = q->left;
 //         p->right = q->right;
-//         get_point_score_kill(p);
-
+//         get_point_score(p);
 //     }
 //     if (q->j != NULLPOSITION) {
 //         q++;
@@ -273,16 +278,17 @@ int is_change(int i, int j, Tree p) {
 //             p->j = q->j;
 //             p->left = q->left;
 //             p->right = q->right;
-//             get_point_score_kill(p);
+//             get_point_score(p);
 //         }
 //     }
 //     p->j = NULLPOSITION;
 //     time_e = clock();
 //     generate_time += time_e - time_b;
 //     time_b = clock();
-//     quick_sort(move_set, 0, index - 1);
+//     quick_sort(move_set, 0, quick_select(move_set, 0, index - 1));
 //     time_e = clock();
 //     sort_time += time_e - time_b;
     
 //     return move_set;
 // }
+

@@ -4,11 +4,18 @@ int node_num = 0;               //搜索节点数目
 int now_score[2] = {4, 0};      //当前黑棋0白棋1的得分
 int next_score[2] = {0, 0};     //搜索完毕下完一步棋后的得分
 int board_shape[4][30] = {0};   //四个方向所有棋形
+int maxdepth = MAXDEPTH;
 Line g_move_buf[LENGTH] = {0};  //缓存上一走法的比特棋盘
 Tree PV_p;                      //用于指向找到的最佳走法
+Node kill_node;
+Node last_node;
+int chaoshi = 0;
 
 clock_t generate_time, sort_time; //生成走法时间和排序时间
 clock_t time_b, time_e;           //开始b 结束e
+clock_t start_t, end_t;
+
+int pvs_kill(Tree, int);
 
 void player_op() {
     Tree head;
@@ -73,8 +80,10 @@ int alpha_beta(Tree pNode, Line* last_buf, Tree last_move, int depth, int alpha,
         re_move_board(j, buf);
         if (v > best) {
             best = v;
-            if (v > alpha)
+            if (v > alpha) {
                 alpha = v;
+                found_PV = 1;
+            }
             if (v >= beta)
                 break;
         }
@@ -99,6 +108,10 @@ int pvs(Tree head, int depth) {
 
     buf_move_board(buf);
     for (p = head; p->point_score != NULL_SCORE; p++) {
+        if (clock() - start_t > 14000) {
+            chaoshi = 1;
+            break;
+        }
         /* 跳过必败点 */
         if (p->point_score == LOSE_SCORE)
             continue;
@@ -132,40 +145,68 @@ int pvs(Tree head, int depth) {
 }
 
 void AI_op() {
-    clock_t start_t, end_t;
-    Tree head, p;
+    Tree head, p, buf_head;
     int val, now_depth;
 
     start_t = clock();
     generate_time = sort_time = 0;
+    chaoshi = 0;
 
     head = get_move(g_i, g_j, 0, g_move_buf, g_move);
-
     free(g_move);
     g_move = head;
 
-    if (now_score[bool_player^1] > 2000)
-        kill_cut(head);
-    else 
-        common_cut(head);
-
     /*
-     *先进行大概10-15层算杀搜索，失败就进行8层PVS搜索
-     *算杀还有亿点点小bug，提交版暂时不用
+     *先进行大概15层算杀搜索，失败就进行9层PVS搜索
     */
 
-    // if (alpha_beta_kill(PV_p, g_move_buf, g_move, 10, N_INFINITY, P_INFINITY) < 200000) {
-        // printf("失败");
-    /* 迭代加深 
-     * 迭代加深可以在浅层就剔除必败点，提高深层搜索速度，
-     * 同时找到最短赢法，还可以通过浅层信息对节点排序，本程序曾经采用了迭代加深的历史表排序，后来弃用了*/  
-    for (now_depth = 1; now_depth <= MAXDEPTH; now_depth += 1) {
-        val = pvs(head, now_depth);
-        if (val >= 100000)
-            break;
+    int kill_out = 0;
+
+    if (head->point_score >= 3000 && now_score[bool_player ^ 1] < 2000) {
+        kill_cut(head);
+        for (int kill = 1; kill <= KILL_DEPTH; kill += 2) {
+            if ((kill_out = pvs_kill(head, kill)) >= 100000)
+                break;
+            end_t = clock();
+        }
     }
-    // } else  
-    //     printf("成功");
+    end_t = clock();
+    printf("算杀用时：%.2fs\n", (end_t - start_t) / 1000.0);
+
+    for (p = head; p->j != NULLPOSITION; p++) {
+        if (p->point_score == NULL_SCORE || p->point_score == LOSE_SCORE)
+            get_point_score(p);
+    }
+
+
+    printf("kill:%d\n", kill_out);
+    if (kill_out < 100000) {
+        printf("失败\n");
+        /* 迭代加深 
+        * 迭代加深可以在浅层就剔除必败点，提高深层搜索速度，
+        * 同时找到最短赢法，还可以通过浅层信息对节点排序，本程序曾经采用了迭代加深的历史表排序，后来弃用了*/  
+        if (now_score[bool_player^1] > 2000)
+            kill_cut(head);
+        else 
+            common_cut(head);
+
+        for (now_depth = 1; now_depth <= maxdepth; now_depth += 1) {
+            val = pvs(head, now_depth);
+            last_node.i = PV_p->i;
+            last_node.j = PV_p->j;
+            last_node.left = PV_p->left;
+            last_node.right = PV_p->right;
+            for (int index = 0; index < 4; index++)
+                last_node.shape[index] = PV_p->shape[index];
+            if (val >= 100000)
+                break;
+        }
+        if (chaoshi) {
+            PV_p = &last_node;
+        }
+    } else  
+        printf("成功\n");
+
     end_t = clock();
     now_score[0] = next_score[0];
     now_score[1] = next_score[1];
@@ -175,7 +216,7 @@ void AI_op() {
     board_shape[3][PV_p->right] = PV_p->shape[3]; 
     g_i = PV_p->i;
     g_j = PV_p->j;
-    system("cls");
+    // system("cls");
     printf("当前局面分 黑：%d 白：%d\n", now_score[0], now_score[1]);
     printf("总用时%.2fs\n", (end_t - start_t)/1000.0);
     printf("生成走法时间%d\n", generate_time);
@@ -242,7 +283,7 @@ void reset_point(Tree p, int *buf) {
  */  
 int kill_cut(Tree head) {
     Tree p;
-    for (p = head; p->j != NULLPOSITION && (p->point_score > 1800); p++);
+    for (p = head; p->j != NULLPOSITION && (p->point_score >= 3000); p++);
     p->point_score = NULL_SCORE;
     if (p - head > 0)
         return 1;
@@ -282,6 +323,34 @@ void quick_sort(Tree move_set, int left, int right) {
     quick_sort(move_set, i + 1, right);
 }
 
+int quick_select(Tree move_set, int left, int right) {
+    int i, j, std;
+
+    i = left;
+    j = right;
+    std = move_set[left].point_score;
+
+	while (i != j){
+		while (move_set[j].point_score <= std && j > i)//找到右侧小于基准值的元素
+			j--;
+		while (move_set[i].point_score >= std && j > i)//找到左侧大于基准值的元素
+			i++;
+        if (j > i)
+            exchange(move_set, i, j);
+	}
+
+    exchange(move_set, i, left);
+
+	if (left < right){
+		if (i < 15)//因为k表示第k个数，而s为下标，故k-1，第k小的数排完序后下标为k-1
+			i = quick_select(move_set, i + 1, right);
+		else if (i > 20)
+			i = quick_select(move_set, left, i - 1);
+		else
+			return i;
+	}
+}
+
 /*交换两个Node的元素*/
 void exchange(Tree move_set, int i, int j) {
     Node temp;
@@ -290,76 +359,125 @@ void exchange(Tree move_set, int i, int j) {
     move_set[j] = temp;
 }
 
-//以下为算杀函数，基本与普通alpha-beta类似，但是每层只搜索冲棋，目前有点小bug导致棋力下降，提交版不用
+#define FAIL 100000
+#define SUCCESS -100000
+/* 只搜索冲棋走法的ab搜索，我们只看能不能赢 一旦能赢就有PVS零窗口快速结束搜索*/
+int alpha_beta_kill(Tree pNode, Line* last_buf, Tree last_move, int depth, int alpha, int beta) {
+    Tree p, head;
+    Line buf[LENGTH];
+    int v, score;
+    int found_PV = 0;
+    int best = N_INFINITY;
+    int i = pNode->i, j = pNode->j;
+    int shape_buf[4];
 
-// int alpha_beta_kill(Tree pNode, Line* last_buf, Tree last_move, int depth, int alpha, int beta) {
-//     Tree p, head;
-//     Line buf[LENGTH];
-//     int v, score;
-//     int found_PV = 0;
-//     int best = N_INFINITY;
-//     int i = pNode->i, j = pNode->j;
-//     int shape_buf[4];
+    /* 得分够高的情况下判断禁手 */ 
+    if (player == WHITE && pNode->point_score > 3600) { 
+        if (forbid(i, j))
+            return P_INFINITY;
+        else
+            renju[i][j] = BLACK;
+    }
 
-//     // 得分够高的情况下判断禁手
-//     if (player == WHITE && pNode->point_score > 3600) { 
-//         if (forbid(i, j))
-//             return P_INFINITY;
-//         else
-//             renju[i][j] = BLACK;
-//     }
+    /* 先判断有没有已经五连 五连返回成功 */
+    if (win(i, j)) 
+        return SUCCESS;
 
-//     //先判断有没有已经五连
-//     if (win(i, j)) 
-//         return N_INFINITY;
+    /* 搜索层数耗尽，直接返回失败标志 */
+    if (depth == 0){
+        return -1;   
+    }
+    //获取走法
+    head = get_move(i, j, depth, last_buf, last_move);
+    /* 当场面上没有冲棋走法以及封堵时，退出搜索*/
+    if (!kill_cut(head)) {
+        free(head);
+        head = NULL;
+        return 0;   
+    }
+    buf_move_board(buf);
 
-//     //搜索层数耗尽
-//     if (depth <= 0){
-//         if(player == BLACK) 
-//             return now_score[0] - now_score[1];   
-//         else 
-//             return now_score[1] - now_score[0];   
-//     }
-//     //获取走法
-//     head = get_move_kill(i, j, depth, last_buf, last_move);
-//     if (!kill_cut(head)) {
-//         free(head);
-//         head = NULL;
-//         if(player == BLACK) 
-//             return now_score[0] - now_score[1];   
-//         else 
-//             return now_score[1] - now_score[0];  
-//     }
-//     buf_move_board(buf);
+    for (p = head; p->point_score != NULL_SCORE; p++) {
+        node_num++;
+        i = p->i;
+        j = p->j;
 
-//     for (p = head; p->point_score != NULL_SCORE; p++) {
-//         node_num++;
-//         i = p->i;
-//         j = p->j;
+        set_bit_board(i ,j);
+        set_point(p, shape_buf);
+        //如果找到PV走法 用极小窗口
+        if (found_PV) {
+            v = -alpha_beta_kill(p, buf, head, depth - 1, -alpha - 1, -alpha);
+            if (v > alpha && v < beta)
+                v = -alpha_beta_kill(p, buf, head, depth - 1, -beta, -alpha);
+        } else 
+            v = -alpha_beta_kill(p, buf, head, depth - 1, -beta, -alpha);
 
-//         set_bit_board(i ,j);
-//         set_point(p, shape_buf);
-//         //如果找到PV走法 用极小窗口
-//         if (found_PV) {
-//             v = -alpha_beta_kill(p, buf, head, depth - 1, -alpha - 1, -alpha);
-//             if (v > alpha && v < beta)
-//                 v = -alpha_beta_kill(p, buf, head, depth - 1, -beta, -alpha);
-//         } else 
-//             v = -alpha_beta_kill(p, buf, head, depth - 1, -beta, -alpha);
-//         reset_point(p, shape_buf);
-//         re_move_board(j, buf);
-//         if (v > best) {
-//             best = v;
-//             if (v > alpha)
-//                 alpha = v;
-//             if (depth == KILL_DEPTH)
-//                 PV_p = p;
-//             if (v >= beta)
-//                 break;
-//         }
-//     }
-//     free(head);
-//     head = NULL;
+        if (v > best) {
+            best = v;
+            if (v > alpha) {
+                alpha = v;
+                found_PV = 1;
+            }
+            if (v >= beta) {
+                reset_point(p, shape_buf);
+                re_move_board(j, buf);
+                break;
+            }
+        }
+        reset_point(p, shape_buf);
+        re_move_board(j, buf);
+    }
+    free(head);
+    head = NULL;
 
-//     return best;
-// }
+    return best;
+}
+
+int pvs_kill(Tree head, int depth) {
+    Tree p;
+    Line buf[LENGTH];
+    int i, j, v;
+    int alpha = 0;
+    int found_PV = 0;
+    int shape_buf[4];
+
+    buf_move_board(buf);
+    for (p = head; p->point_score != NULL_SCORE; p++) {
+        /* 跳过必败点 */
+        if (clock() - start_t > 7500)
+            break;
+        if (p->point_score == LOSE_SCORE)
+            continue;
+        i = p->i;
+        j = p->j;
+        set_bit_board(i, j);
+        set_point(p, shape_buf);
+        if (found_PV) {
+            v = -alpha_beta_kill(p, buf, g_move, depth - 1, -alpha - 1, -alpha);
+            if (v > alpha)
+                v = -alpha_beta_kill(p, buf, g_move, depth - 1, N_INFINITY, -alpha);
+        } else 
+            v = -alpha_beta_kill(p, buf, g_move, depth - 1, N_INFINITY, -alpha);
+
+        if (v > alpha) {
+            kill_node.i = p->i; 
+            kill_node.j = p->j; 
+            kill_node.left = p->left; 
+            kill_node.right = p->right; 
+            for (int index = 0; index < 4; index++)
+                kill_node.shape[index] = p->shape[index]; 
+            PV_p = &kill_node;
+            next_score[0] = now_score[0];
+            next_score[1] = now_score[1];
+            found_PV = 1;
+            alpha = v;
+        }
+        if (v == 0)
+            p->point_score = LOSE_SCORE;
+
+        reset_point(p, shape_buf);
+        re_move_board(j ,buf);
+    }
+
+    return alpha;
+}
